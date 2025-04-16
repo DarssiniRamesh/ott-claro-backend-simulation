@@ -83,6 +83,55 @@ const options = {
             },
           },
         },
+        User: {
+          type: 'object',
+          properties: {
+            _id: {
+              type: 'string',
+              description: 'The auto-generated id of the user',
+            },
+            email: {
+              type: 'string',
+              description: 'The email of the user',
+            },
+            role: {
+              type: 'string',
+              description: 'The role of the user',
+              enum: ['user', 'admin'],
+            },
+            profile: {
+              type: 'object',
+              properties: {
+                firstName: {
+                  type: 'string',
+                  description: 'The first name of the user',
+                },
+                lastName: {
+                  type: 'string',
+                  description: 'The last name of the user',
+                },
+                avatar: {
+                  type: 'string',
+                  description: 'The avatar URL of the user',
+                },
+                phone: {
+                  type: 'string',
+                  description: 'The phone number of the user',
+                },
+              },
+            },
+            createdAt: {
+              type: 'string',
+              format: 'date-time',
+              description: 'The date the user was created',
+            },
+            updatedAt: {
+              type: 'string',
+              format: 'date-time',
+              description: 'The date the user was last updated',
+            },
+          },
+        },
         Error: {
           type: 'object',
           properties: {

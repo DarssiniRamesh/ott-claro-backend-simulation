@@ -9,6 +9,7 @@ const config = require('../config/env.config');
 
 /**
  * Middleware to authenticate requests using JWT
+ * @PUBLIC_INTERFACE
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @param {Function} next - Express next function
@@ -33,6 +34,39 @@ const authenticate = (req, res, next) => {
 };
 
 /**
+ * Middleware to check if user has required role
+ * @PUBLIC_INTERFACE
+ * @param {string|string[]} roles - Required role(s)
+ * @returns {Function} - Express middleware function
+ */
+const authorize = (roles) => {
+  // Convert string to array if single role is provided
+  if (typeof roles === 'string') {
+    roles = [roles];
+  }
+  
+  return (req, res, next) => {
+    // User must be authenticated first
+    if (!req.user) {
+      return res.status(401).json({
+        status: 'error',
+        message: 'Unauthorized - Authentication required'
+      });
+    }
+    
+    // Check if user's role is in the allowed roles
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({
+        status: 'error',
+        message: 'Forbidden - Insufficient permissions'
+      });
+    }
+    
+    next();
+  };
+};
+
+/**
  * Generate a JWT token for a user
  * @param {Object} user - User object
  * @returns {string} JWT token
@@ -49,44 +83,8 @@ const generateToken = (user) => {
   });
 };
 
-/**
- * Mock login function for demonstration purposes
- * In a real application, this would verify credentials against a database
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- */
-const login = (req, res) => {
-  const { email, password } = req.body;
-  
-  // In a real application, you would verify the credentials against a database
-  // For this simulation, we'll just check for a demo user
-  if (email === 'user@example.com' && password === 'password') {
-    const user = {
-      id: '1',
-      email: 'user@example.com',
-      role: 'user'
-    };
-    
-    const token = generateToken(user);
-    
-    return res.json({
-      status: 'success',
-      message: 'Login successful',
-      data: {
-        user,
-        token
-      }
-    });
-  }
-  
-  return res.status(401).json({
-    status: 'error',
-    message: 'Invalid credentials'
-  });
-};
-
 module.exports = {
   authenticate,
-  generateToken,
-  login
+  authorize,
+  generateToken
 };

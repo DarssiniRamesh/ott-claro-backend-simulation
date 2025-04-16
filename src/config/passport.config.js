@@ -6,6 +6,7 @@
 const passport = require('passport');
 const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
 const config = require('./env.config');
+const User = require('../models/user.model');
 
 // Options for JWT strategy
 const options = {
@@ -20,20 +21,25 @@ const options = {
  */
 passport.use(new JwtStrategy(options, async (req, payload, done) => {
   try {
-    // In a real application, you would verify the user from the database
-    // For this simulation, we'll just use the payload data
     if (!payload || !payload.id) {
       return done(null, false, { message: 'Invalid token' });
     }
     
+    // Find user by ID from the database
+    const user = await User.findById(payload.id);
+    
+    if (!user) {
+      return done(null, false, { message: 'User not found' });
+    }
+    
     // Set the user in the request object
-    const user = {
-      id: payload.id,
-      email: payload.email,
-      role: payload.role
+    const userForToken = {
+      id: user._id,
+      email: user.email,
+      role: user.role
     };
     
-    return done(null, user);
+    return done(null, userForToken);
   } catch (error) {
     return done(error, false);
   }
