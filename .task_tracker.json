@@ -1,0 +1,5 @@
+{
+  "task_description": "{'component_name': 'API Core Component', 'description': '**Core Technologies:**\n- **Primary Stack:** Node.js/Express.js for API server implementation\n- **Database:** MongoDB for data persistence and session storage\n- **Authentication:** JWT + Passport.js for secure token management\n- **API Documentation:** Swagger/OpenAPI for endpoint documentation\n- **Integration:** MongoDB Driver for data storage\n- **Runtime:** Node.js runtime environment\n- **Caching:** Internal memory cache for region data and configurations\n\n**Build and Development Tools:**\n- **Build System:** npm/yarn for package management\n- **Testing Frameworks:**\n  - Jest for unit testing\n  - Supertest for API testing\n  - Postman for integration testing\n- **Development Tools:**\n  - ESLint for code quality\n  - Prettier for code formatting\n  - Nodemon for development server\n- **CI/CD Requirements:**\n  - Git for version control\n  - npm scripts for build automation\n  - Environment configuration management', 'framework': None, 'interfaces': '', 'algorithms': '', 'pseudocode': '', 'figma_components': []}",
+  "tasks": {},
+  "next_task_id": 1
+}
