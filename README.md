@@ -63,6 +63,12 @@ A RESTful API built with Node.js/Express.js for OTT Claro Backend Simulation.
    npm install
    ```
 
+   If you encounter dependency issues, try:
+   ```bash
+   npm cache clean --force
+   npm install
+   ```
+
 3. Create a `.env` file in the root directory with the following variables:
    ```
    PORT=3000
@@ -87,7 +93,12 @@ A RESTful API built with Node.js/Express.js for OTT Claro Backend Simulation.
    # MongoDB should be running as a service
    ```
 
-2. Start the server:
+2. If you've updated dependencies in package.json, reinstall them:
+   ```bash
+   npm install
+   ```
+
+3. Start the server:
    ```bash
    npm start
    ```
@@ -120,11 +131,27 @@ If you encounter "Cannot find module" errors:
    npm install
    ```
 
-3. Check for Node.js version compatibility:
+3. For specific missing modules like 'merge-descriptors' or 'parseurl', ensure they are in your package.json:
+   ```json
+   "dependencies": {
+     "express": "^5.1.0",
+     "merge-descriptors": "^2.0.0",
+     "parseurl": "^1.3.3",
+     // other dependencies
+   }
+   ```
+   Then run `npm install` again.
+
+4. If you still encounter issues with specific modules, you can install them individually:
+   ```bash
+   npm install merge-descriptors parseurl --save
+   ```
+
+5. Check for Node.js version compatibility:
    ```bash
    node -v
    ```
-   Ensure you're using Node.js v14 or higher.
+   Ensure you're using Node.js v14 or higher. Express.js v5.1.0 may require Node.js v18 or higher.
 
 #### MongoDB Connection Issues
 
