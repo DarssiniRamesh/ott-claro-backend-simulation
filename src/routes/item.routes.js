@@ -296,7 +296,7 @@ router.put('/:id', authenticate, itemController.updateItem);
  *                   type: null
  *                 message:
  *                   type: string
- *                   example: Item with id: 1 deleted successfully
+ *                   example: "Item with id: 1 deleted successfully"
  *       401:
  *         description: Unauthorized
  *         content:
