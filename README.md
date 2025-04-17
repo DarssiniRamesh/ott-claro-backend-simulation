@@ -47,8 +47,8 @@ A RESTful API built with Node.js/Express.js for OTT Claro Backend Simulation.
 ### Prerequisites
 
 - Node.js (v14 or higher)
-- npm or yarn
-- MongoDB (optional for actual database operations)
+- npm (v6 or higher) or yarn
+- MongoDB (v4.4 or higher, optional if you're using a remote MongoDB instance)
 
 ### Installation
 
@@ -70,9 +70,24 @@ A RESTful API built with Node.js/Express.js for OTT Claro Backend Simulation.
    MONGODB_URI=mongodb://localhost:27017/ott-claro-api
    JWT_SECRET=your-secret-key-change-in-production
    JWT_EXPIRATION=1d
+   CACHE_DURATION=300
    ```
 
-4. Start the server:
+### Starting the Server
+
+1. Start the MongoDB service (if using local MongoDB):
+   ```bash
+   # On Ubuntu/Debian
+   sudo service mongodb start
+   
+   # On macOS (if installed via Homebrew)
+   brew services start mongodb-community
+   
+   # On Windows (if installed as a service)
+   # MongoDB should be running as a service
+   ```
+
+2. Start the server:
    ```bash
    npm start
    ```
@@ -82,8 +97,87 @@ A RESTful API built with Node.js/Express.js for OTT Claro Backend Simulation.
    npm run dev
    ```
 
-5. Access the API at `http://localhost:3000`
-6. Access the Swagger documentation at `http://localhost:3000/api-docs`
+3. Verify the server is running:
+   - Access the API at `http://localhost:3000`
+   - You should see a welcome message with a link to the documentation
+   - Access the Swagger documentation at `http://localhost:3000/api-docs`
+
+### Troubleshooting Common Issues
+
+#### Module Not Found Errors
+
+If you encounter "Cannot find module" errors:
+
+1. Make sure all dependencies are installed:
+   ```bash
+   npm install
+   ```
+
+2. If errors persist, try clearing npm cache and reinstalling:
+   ```bash
+   npm cache clean --force
+   rm -rf node_modules
+   npm install
+   ```
+
+3. Check for Node.js version compatibility:
+   ```bash
+   node -v
+   ```
+   Ensure you're using Node.js v14 or higher.
+
+#### MongoDB Connection Issues
+
+If the server fails to connect to MongoDB:
+
+1. Verify MongoDB is running:
+   ```bash
+   # Check MongoDB status
+   sudo service mongodb status
+   
+   # Or for macOS
+   brew services list
+   ```
+
+2. Check your MongoDB connection string in the `.env` file:
+   - For local MongoDB: `mongodb://localhost:27017/ott-claro-api`
+   - For MongoDB Atlas: `mongodb+srv://<username>:<password>@<cluster>.mongodb.net/ott-claro-api`
+
+3. If using MongoDB Atlas or a remote instance, ensure your IP address is whitelisted in the MongoDB Atlas dashboard.
+
+4. Try connecting with the MongoDB shell to verify credentials:
+   ```bash
+   mongo mongodb://localhost:27017/ott-claro-api
+   ```
+
+#### Port Already in Use
+
+If you see "Port 3000 is already in use":
+
+1. Change the port in your `.env` file:
+   ```
+   PORT=3001
+   ```
+
+2. Or find and terminate the process using port 3000:
+   ```bash
+   # Find the process
+   lsof -i :3000
+   
+   # Kill the process
+   kill -9 <PID>
+   ```
+
+#### JWT Authentication Issues
+
+If you encounter JWT authentication problems:
+
+1. Ensure your JWT_SECRET is properly set in the `.env` file
+2. Check that your token hasn't expired (default expiration is 1 day)
+3. Verify you're including the token correctly in the Authorization header:
+   ```
+   Authorization: Bearer <your-token>
+   ```
 
 ## Authentication
 
