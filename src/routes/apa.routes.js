@@ -91,7 +91,7 @@ router.get('/asset', cacheMiddleware(), apaController.getAsset);
  *     tags: [APA]
  *     parameters:
  *       - in: query
- *         name: assetId
+ *         name: id
  *         required: true
  *         schema:
  *           type: string

@@ -62,22 +62,22 @@ const getAsset = async (req, res, next) => {
  */
 const getMetadata = async (req, res, next) => {
   try {
-    const { assetId } = req.query;
+    const { id } = req.query;
     
     // Validate required parameters
-    if (!assetId) {
+    if (!id) {
       throw new ApiError(400, 'Asset ID is required');
     }
     
     // In a real application, this would fetch the metadata from the database or a service
     // For this simulation, we'll return mock data or a 404 error
-    if (['asset123', 'asset456', 'asset789'].includes(assetId)) {
+    if (['asset123', 'asset456', 'asset789'].includes(id)) {
       // Mock metadata based on asset ID
       let metadata;
       
-      if (assetId === 'asset123') {
+      if (id === 'asset123') {
         metadata = {
-          assetId,
+          assetId: id,
           title: 'Sample Movie',
           description: 'A sample movie description with exciting plot and characters.',
           releaseYear: 2023,
@@ -88,12 +88,12 @@ const getMetadata = async (req, res, next) => {
           language: 'English',
           subtitles: ['English', 'Spanish', 'French'],
           runtime: '2h 0m',
-          posterUrl: `https://example.com/poster/${assetId}.jpg`,
-          trailerUrl: `https://example.com/trailer/${assetId}`
+          posterUrl: `https://example.com/poster/${id}.jpg`,
+          trailerUrl: `https://example.com/trailer/${id}`
         };
-      } else if (assetId === 'asset456') {
+      } else if (id === 'asset456') {
         metadata = {
-          assetId,
+          assetId: id,
           title: 'Another Movie',
           description: 'Another exciting movie with a thrilling storyline.',
           releaseYear: 2022,
@@ -104,12 +104,12 @@ const getMetadata = async (req, res, next) => {
           language: 'English',
           subtitles: ['English', 'Spanish'],
           runtime: '1h 45m',
-          posterUrl: `https://example.com/poster/${assetId}.jpg`,
-          trailerUrl: `https://example.com/trailer/${assetId}`
+          posterUrl: `https://example.com/poster/${id}.jpg`,
+          trailerUrl: `https://example.com/trailer/${id}`
         };
       } else { // asset789
         metadata = {
-          assetId,
+          assetId: id,
           title: 'TV Series',
           description: 'A popular TV series with multiple seasons.',
           releaseYear: 2021,
@@ -121,8 +121,8 @@ const getMetadata = async (req, res, next) => {
           subtitles: ['English', 'Spanish', 'German'],
           seasons: 3,
           episodes: 24,
-          posterUrl: `https://example.com/poster/${assetId}.jpg`,
-          trailerUrl: `https://example.com/trailer/${assetId}`
+          posterUrl: `https://example.com/poster/${id}.jpg`,
+          trailerUrl: `https://example.com/trailer/${id}`
         };
       }
       
@@ -133,7 +133,7 @@ const getMetadata = async (req, res, next) => {
         }
       });
     } else {
-      throw new ApiError(404, `Asset metadata not found for asset id: ${assetId}`);
+      throw new ApiError(404, `Asset metadata not found for asset id: ${id}`);
     }
   } catch (error) {
     next(error);
