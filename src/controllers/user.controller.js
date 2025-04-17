@@ -313,6 +313,41 @@ const logoutUser = async (req, res, next) => {
   }
 };
 
+/**
+ * Get user header information
+ * @PUBLIC_INTERFACE
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next function
+ */
+const getStartHeaderInfo = async (req, res, next) => {
+  try {
+    // User is already set in req.user by the authenticate middleware
+    const user = await User.findById(req.user.id);
+    
+    if (!user) {
+      throw new ApiError(404, 'User not found');
+    }
+    
+    // Create header info object
+    const headerInfo = {
+      userId: user._id,
+      displayName: `${user.profile.firstName} ${user.profile.lastName}`.trim(),
+      avatar: user.profile.avatar,
+      notifications: 5 // Mock notification count
+    };
+    
+    res.json({
+      status: 'success',
+      data: {
+        headerInfo
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -320,5 +355,6 @@ module.exports = {
   getCurrentUser,
   updateProfile,
   changePassword,
-  logoutUser
+  logoutUser,
+  getStartHeaderInfo
 };
