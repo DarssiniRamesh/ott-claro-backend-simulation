@@ -2,6 +2,9 @@
   "name": "ott-claro-backend-simulation",
   "version": "1.0.0",
   "dependencies": {
+    "jsonwebtoken": "^9.0.2",
+    "dotenv": "^16.3.1",
+    "express-validator": "^7.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "xss": "^1.0.14",
@@ -30,6 +33,7 @@
     "@types/jest": "^29.x",
     "@types/node": "^22.14.1",
     "@types/supertest": "^6.x",
+    "@types/jsonwebtoken": "^9.0.5",
     "babel-jest": "^29.x",
     "jest": "^29.x",
     "supertest": "^6.x",
