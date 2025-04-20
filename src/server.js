@@ -62,9 +62,28 @@ app.use(errorHandler);
 
 // Start server
 const PORT = config.PORT || 3000;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   console.log(`Swagger documentation available at http://localhost:${PORT}/api-docs`);
+}).on('error', (err) => {
+  console.error('Failed to start server:', err);
+  process.exit(1);
+});
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled Promise Rejection:', err);
+  server.close(() => {
+    process.exit(1);
+  });
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+  server.close(() => {
+    process.exit(1);
+  });
 });
 
 module.exports = app;
