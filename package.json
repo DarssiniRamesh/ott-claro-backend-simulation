@@ -1,0 +1,22 @@
+{
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --coverage"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.x",
+    "@babel/preset-env": "^7.x",
+    "@babel/preset-typescript": "^7.x",
+    "@types/express": "^5.0.1",
+    "@types/jest": "^29.x",
+    "@types/node": "^22.14.1",
+    "@types/supertest": "^6.x",
+    "babel-jest": "^29.x",
+    "jest": "^29.x",
+    "supertest": "^6.x",
+    "ts-jest": "^29.x",
+    "typescript": "^5.8.3"
+  }
+}
