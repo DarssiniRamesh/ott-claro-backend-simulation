@@ -7,6 +7,7 @@ const express = require('express');
 const { authenticate } = require('../middleware/auth.middleware');
 const { validateRequest } = require('../middleware/validation.middleware');
 const { UserSessionRequest } = require('../types/api.types');
+const userController = require('../controllers/user.controller');
 
 
 const router = express.Router();
@@ -108,6 +109,6 @@ router.post('/startheaderinfo', authenticate, validateRequest(UserSessionRequest
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.get('/startheaderinfo', authenticate, cacheMiddleware(), userController.getStartHeaderInfo);
+router.get('/startheaderinfo', authenticate, userController.getStartHeaderInfo);
 
 module.exports = router;
