@@ -1,174 +1,216 @@
-/**
- * Swagger configuration
- * Sets up Swagger/OpenAPI documentation for the API
- */
-
-const swaggerJsdoc = require('swagger-jsdoc');
+const expressJSDocSwagger = require('express-jsdoc-swagger');
 const swaggerUi = require('swagger-ui-express');
-const config = require('../config/env.config');
 
-/**
- * Swagger definition options
- */
 const options = {
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'OTT Claro Backend Simulation API',
-      version: '1.0.0',
-      description: 'A RESTful API built with Express.js for OTT Claro Backend Simulation',
-      license: {
-        name: 'ISC',
-        url: 'https://opensource.org/licenses/ISC',
-      },
-      contact: {
-        name: 'API Support',
-        url: 'https://github.com/DarssiniRamesh/ott-claro-backend-simulation',
-        email: 'support@example.com',
-      },
+  info: {
+    version: '1.0.0',
+    title: 'OTT Claro Backend Simulation API',
+    description: 'API documentation for OTT Claro Backend Simulation',
+    contact: {
+      name: 'API Support',
+      email: 'support@example.com'
     },
-    servers: [
-      {
-        url: `http://localhost:${config.PORT}/api`,
-        description: 'Development server',
-      },
-    ],
-    components: {
-      securitySchemes: {
-        bearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT',
-        },
-      },
-      schemas: {
-        Item: {
-          type: 'object',
-          required: ['name', 'description', 'price', 'category'],
-          properties: {
-            id: {
-              type: 'string',
-              description: 'The auto-generated id of the item',
-            },
-            name: {
-              type: 'string',
-              description: 'The name of the item',
-            },
-            description: {
-              type: 'string',
-              description: 'The description of the item',
-            },
-            price: {
-              type: 'number',
-              description: 'The price of the item',
-            },
-            category: {
-              type: 'string',
-              description: 'The category of the item',
-            },
-            inStock: {
-              type: 'boolean',
-              description: 'Whether the item is in stock',
-              default: true,
-            },
-            createdAt: {
-              type: 'string',
-              format: 'date-time',
-              description: 'The date the item was created',
-            },
-            updatedAt: {
-              type: 'string',
-              format: 'date-time',
-              description: 'The date the item was last updated',
-            },
-          },
-        },
-        User: {
-          type: 'object',
-          properties: {
-            _id: {
-              type: 'string',
-              description: 'The auto-generated id of the user',
-            },
-            email: {
-              type: 'string',
-              description: 'The email of the user',
-            },
-            role: {
-              type: 'string',
-              description: 'The role of the user',
-              enum: ['user', 'admin'],
-            },
-            profile: {
-              type: 'object',
-              properties: {
-                firstName: {
-                  type: 'string',
-                  description: 'The first name of the user',
-                },
-                lastName: {
-                  type: 'string',
-                  description: 'The last name of the user',
-                },
-                avatar: {
-                  type: 'string',
-                  description: 'The avatar URL of the user',
-                },
-                phone: {
-                  type: 'string',
-                  description: 'The phone number of the user',
-                },
-              },
-            },
-            createdAt: {
-              type: 'string',
-              format: 'date-time',
-              description: 'The date the user was created',
-            },
-            updatedAt: {
-              type: 'string',
-              format: 'date-time',
-              description: 'The date the user was last updated',
-            },
-          },
-        },
-        Error: {
-          type: 'object',
-          properties: {
-            status: {
-              type: 'string',
-              description: 'Error status',
-            },
-            message: {
-              type: 'string',
-              description: 'Error message',
-            },
-          },
-        },
-      },
+    license: {
+      name: 'Apache 2.0',
+      url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
+    }
+  },
+  security: {
+    BearerAuth: {
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
     },
   },
-  apis: ['./src/routes/*.js'], // Path to the API routes files
+  baseDir: __dirname,
+  filesPattern: '../**/*.js',
+  swaggerUIPath: '/api-docs',
+  exposeSwaggerUI: true,
+  exposeApiDocs: true,
+  apiDocsPath: '/api-docs.json',
+  notRequiredAsNullable: false,
+  swaggerUiOptions: {},
 };
 
 /**
- * Initialize Swagger documentation
- * @param {Object} app - Express application
+ * @typedef {object} ErrorResponse
+ * @property {string} message.required - Error message - Example: Invalid request parameters
+ * @property {string} code.required - Error code - Example: VALIDATION_ERROR
+ * @property {string} [details] - Detailed error information
+ * @property {array<string>} [validationErrors] - List of validation errors
  */
-const swaggerSetup = (app) => {
-  const specs = swaggerJsdoc(options);
-  
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
-    explorer: true,
-    customCss: '.swagger-ui .topbar { display: none }',
-    customSiteTitle: 'OTT Claro API Documentation',
-  }));
-  
-  // Serve swagger.json
-  app.get('/api-docs.json', (req, res) => {
-    res.setHeader('Content-Type', 'application/json');
-    res.send(specs);
+
+/**
+ * @typedef {object} UserStartHeaderInfo
+ * @property {string} deviceId.required - Unique device identifier - Pattern: ^[A-Za-z0-9-_]{1,64}$ - Example: device-123abc
+ * @property {string} region.required - User's region code - Pattern: ^[A-Z]{2}$ - Example: BR
+ * @property {string} [language] - Preferred language - Pattern: ^[a-z]{2}-[A-Z]{2}$ - Example: pt-BR
+ * @property {string} [timezone] - User's timezone - Example: America/Sao_Paulo
+ * @property {string} [deviceType] - Type of device - Enum: [mobile, tablet, tv, web] - Example: mobile
+ * @property {string} [appVersion] - Application version - Pattern: ^\d+\.\d+\.\d+$ - Example: 1.0.0
+ */
+
+/**
+ * @typedef {object} UserStartHeaderResponse
+ * @property {string} sessionToken.required - JWT session token
+ * @property {object} userPreferences.required - User preferences
+ * @property {string} userPreferences.language - Selected language
+ * @property {string} userPreferences.region - Selected region
+ */
+
+/**
+ * @typedef {object} NavigationItem
+ * @property {string} id.required - Navigation item ID
+ * @property {string} title.required - Display title
+ * @property {string} type.required - Item type (category/content)
+ * @property {array<NavigationItem>} [children] - Child navigation items
+ */
+
+/**
+ * @typedef {object} AssetConfig
+ * @property {string} id.required - Asset ID
+ * @property {string} type.required - Asset type
+ * @property {object} playbackConfig.required - Playback configuration
+ * @property {string} playbackConfig.url - Streaming URL
+ * @property {string} playbackConfig.format - Format (HLS/DASH)
+ */
+
+/**
+ * @typedef {object} MetadataConfig
+ * @property {string} id.required - Content ID
+ * @property {string} title.required - Content title
+ * @property {string} description - Content description
+ * @property {array<string>} genres - Content genres
+ * @property {object} ratings - Content ratings
+ */
+
+/**
+ * POST /api/user/startheaderinfo
+ * @summary Initialize user session with device and region information
+ * @tags User Session
+ * @param {UserStartHeaderInfo} request.body.required - User session initialization parameters
+ * @return {UserStartHeaderResponse} 200 - Success response
+ * @return {ErrorResponse} 400 - Bad request - Invalid parameters provided
+ * @return {ErrorResponse} 429 - Too Many Requests - Rate limit exceeded
+ * @return {ErrorResponse} 500 - Server error - Internal server error
+ * @header {string} X-RateLimit-Limit - Maximum number of requests allowed per window - Example: 100
+ * @header {string} X-RateLimit-Remaining - Number of requests remaining in current window - Example: 99
+ * @header {string} X-RateLimit-Reset - Time when the rate limit window resets in UTC epoch seconds - Example: 1635724800
+ * @header {string} X-RateLimit-Policy - Rate limit policy details - Example: 100 requests per 60 seconds
+ * @example request - Example request payload
+ * {
+ *   "deviceId": "device123",
+ *   "region": "BR",
+ *   "language": "pt-BR",
+ *   "timezone": "America/Sao_Paulo"
+ * }
+ * @example response - 200 - Example success response
+ * {
+ *   "sessionToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+ *   "userPreferences": {
+ *     "language": "pt-BR",
+ *     "region": "BR"
+ *   }
+ * }
+ */
+
+/**
+ * GET /api/nav/data
+ * @summary Retrieve hierarchical navigation structure
+ * @tags Navigation
+ * @security BearerAuth
+ * @param {string} [region] - Filter navigation by region - Pattern: ^[A-Z]{2}$ - Example: BR
+ * @param {string} [language] - Filter by language - Pattern: ^[a-z]{2}-[A-Z]{2}$ - Example: pt-BR
+ * @param {number} [maxDepth=3] - Maximum depth of navigation tree - Minimum: 1 - Maximum: 5
+ * @return {array<NavigationItem>} 200 - Success response
+ * @return {ErrorResponse} 401 - Unauthorized - Invalid or expired token
+ * @return {ErrorResponse} 429 - Too Many Requests - Rate limit exceeded
+ * @return {ErrorResponse} 500 - Server error - Internal server error
+ * @header {string} X-RateLimit-Limit - Maximum number of requests allowed per window
+ * @header {string} X-RateLimit-Remaining - Number of requests remaining in current window
+ * @header {string} X-RateLimit-Reset - Time when the rate limit window resets
+ * @header {string} Cache-Control - Cache control header - Example: max-age=300
+ * @example response - 200 - Example success response
+ * [{
+ *   "id": "home",
+ *   "title": "Home",
+ *   "type": "category",
+ *   "children": [{
+ *     "id": "movies",
+ *     "title": "Movies",
+ *     "type": "category"
+ *   }]
+ * }]
+ */
+
+/**
+ * GET /api/apa/asset
+ * @summary Get device-specific asset configurations
+ * @tags Asset
+ * @security BearerAuth
+ * @param {string} assetId.query.required - Asset identifier - Pattern: ^[A-Za-z0-9-_]{1,64}$ - Example: movie-123
+ * @param {string} deviceType.query.required - Type of device - Enum: [mobile, tablet, tv, web] - Example: mobile
+ * @param {string} [quality] - Requested quality - Enum: [SD, HD, FHD, UHD] - Example: HD
+ * @param {string} [format] - Streaming format - Enum: [HLS, DASH] - Example: HLS
+ * @return {AssetConfig} 200 - Success response
+ * @return {ErrorResponse} 400 - Bad Request - Invalid parameters
+ * @return {ErrorResponse} 401 - Unauthorized - Invalid or expired token
+ * @return {ErrorResponse} 403 - Forbidden - Insufficient permissions
+ * @return {ErrorResponse} 404 - Asset not found
+ * @return {ErrorResponse} 429 - Too Many Requests - Rate limit exceeded
+ * @return {ErrorResponse} 500 - Server error - Internal server error
+ * @header {string} X-RateLimit-Limit - Maximum number of requests allowed per window
+ * @header {string} X-RateLimit-Remaining - Number of requests remaining in current window
+ * @header {string} X-RateLimit-Reset - Time when the rate limit window resets
+ * @example response - 200 - Example success response
+ * {
+ *   "id": "movie123",
+ *   "type": "movie",
+ *   "playbackConfig": {
+ *     "url": "https://streaming.example.com/movie123/master.m3u8",
+ *     "format": "HLS"
+ *   }
+ * }
+ */
+
+/**
+ * GET /api/apa/metadata
+ * @summary Retrieve content metadata and parameters
+ * @tags Metadata
+ * @security BearerAuth
+ * @param {string} contentId.query.required - Content identifier - Pattern: ^[A-Za-z0-9-_]{1,64}$ - Example: movie-123
+ * @param {string} [language] - Content language - Pattern: ^[a-z]{2}-[A-Z]{2}$ - Example: pt-BR
+ * @param {string} [fields] - Comma-separated list of fields to include - Example: title,description,genres
+ * @return {MetadataConfig} 200 - Success response
+ * @return {ErrorResponse} 400 - Bad Request - Invalid parameters
+ * @return {ErrorResponse} 401 - Unauthorized - Invalid or expired token
+ * @return {ErrorResponse} 403 - Forbidden - Insufficient permissions
+ * @return {ErrorResponse} 404 - Content not found
+ * @return {ErrorResponse} 429 - Too Many Requests - Rate limit exceeded
+ * @return {ErrorResponse} 500 - Server error - Internal server error
+ * @header {string} X-RateLimit-Limit - Maximum number of requests allowed per window
+ * @header {string} X-RateLimit-Remaining - Number of requests remaining in current window
+ * @header {string} X-RateLimit-Reset - Time when the rate limit window resets
+ * @header {string} Cache-Control - Cache control header - Example: max-age=3600
+ * @example response - 200 - Example success response
+ * {
+ *   "id": "movie123",
+ *   "title": "Example Movie",
+ *   "description": "An exciting movie",
+ *   "genres": ["Action", "Adventure"],
+ *   "ratings": {
+ *     "imdb": 8.5,
+ *     "rottenTomatoes": 85
+ *   }
+ * }
+ */
+
+module.exports = (app) => {
+  // Initialize express-jsdoc-swagger
+  const instance = expressJSDocSwagger(app)(options);
+
+  // Setup swagger-ui-express once the OpenAPI spec is generated
+  instance.on('finish', (swaggerDef) => {
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDef));
   });
 };
-
-module.exports = swaggerSetup;

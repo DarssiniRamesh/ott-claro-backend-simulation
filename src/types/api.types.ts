@@ -3,10 +3,26 @@
  */
 
 // User Session Types
-export interface UserSessionRequest {
+import { IsString, IsNotEmpty, Matches } from 'class-validator';
+
+export class UserSessionRequest {
+  @IsString()
+  @IsNotEmpty()
+  @Matches(/^[A-Za-z0-9-_]{1,64}$/)
   deviceId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @Matches(/^[A-Z]{2}$/)
   region: string;
+
+  @IsString()
+  @IsNotEmpty()
   platform: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @Matches(/^\d+\.\d+\.\d+$/)
   appVersion: string;
 }
 

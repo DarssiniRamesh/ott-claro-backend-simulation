@@ -5,6 +5,7 @@
 
 const User = require('../models/user.model');
 const { ApiError } = require('../middleware/error.middleware');
+const { sanitizeInput } = require('../utils/sanitize.util');
 
 /**
  * Initialize user session with device and region information
@@ -15,7 +16,7 @@ const { ApiError } = require('../middleware/error.middleware');
  */
 const startHeaderInfo = async (req, res, next) => {
   try {
-    const { deviceId, region, platform, appVersion } = req.body;
+    const { deviceId, region, platform, appVersion } = sanitizeInput(req.body);
 
     // Validate required fields
     if (!deviceId || !region || !platform || !appVersion) {
@@ -357,7 +358,7 @@ const logoutUser = async (req, res, next) => {
  */
 const getStartHeaderInfo = async (req, res, next) => {
   try {
-    const { deviceId, region, platform, appVersion } = req.body;
+    const { deviceId, region, platform, appVersion } = sanitizeInput(req.body);
 
     // Validate required fields
     if (!deviceId || !region || !platform || !appVersion) {

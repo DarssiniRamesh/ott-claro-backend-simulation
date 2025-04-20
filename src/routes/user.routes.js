@@ -5,6 +5,8 @@
 
 const express = require('express');
 const { authenticate } = require('../middleware/auth.middleware');
+const { validateRequest } = require('../middleware/validation.middleware');
+const { UserSessionRequest } = require('../types/api.types');
 
 
 const router = express.Router();
@@ -45,7 +47,7 @@ const router = express.Router();
  *       401:
  *         description: Unauthorized
  */
-router.post('/startheaderinfo', authenticate, userController.startHeaderInfo);
+router.post('/startheaderinfo', authenticate, validateRequest(UserSessionRequest), userController.startHeaderInfo);
 
 
 /**
