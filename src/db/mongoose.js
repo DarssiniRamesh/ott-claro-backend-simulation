@@ -37,7 +37,24 @@ let connectionMetrics = {
     operationsPerSecond: 0,
     averageLatency: 0,
     lastMinuteOperations: 0,
-    peakConnections: 0
+    peakConnections: 0,
+    queryLatency: {
+      read: 0,
+      write: 0,
+      aggregate: 0
+    },
+    operationTypes: {
+      insert: 0,
+      query: 0,
+      update: 0,
+      delete: 0,
+      aggregate: 0
+    },
+    connectionPool: {
+      utilizationRate: 0,
+      waitQueueLength: 0,
+      waitQueueLatency: 0
+    }
   },
   errors: {
     network: 0,
@@ -159,11 +176,35 @@ const connectDB = async () => {
           connectionMetrics.performance.peakConnections = currentPoolSize;
         }
 
-        // Calculate operations per second
+        // Calculate detailed operation metrics
         const opCounters = mongoose.connection.db.serverStatus().opcounters;
         const totalOps = Object.values(opCounters).reduce((a, b) => a + b, 0);
         connectionMetrics.performance.operationsPerSecond = totalOps;
         connectionMetrics.performance.lastMinuteOperations = totalOps;
+
+        // Update operation type metrics
+        connectionMetrics.performance.operationTypes = {
+          insert: opCounters.insert || 0,
+          query: opCounters.query || 0,
+          update: opCounters.update || 0,
+          delete: opCounters.delete || 0,
+          aggregate: opCounters.command || 0
+        };
+
+        // Calculate connection pool utilization
+        const utilizationRate = connectionMetrics.pool.activeConnections / connectionMetrics.pool.totalConnections;
+        connectionMetrics.performance.connectionPool.utilizationRate = utilizationRate;
+        connectionMetrics.performance.connectionPool.waitQueueLength = connectionMetrics.pool.waitQueueSize;
+
+        // Get server status for latency metrics
+        const serverStatus = mongoose.connection.db.serverStatus();
+        if (serverStatus.opLatencies) {
+          connectionMetrics.performance.queryLatency = {
+            read: serverStatus.opLatencies.reads?.latency || 0,
+            write: serverStatus.opLatencies.writes?.latency || 0,
+            aggregate: serverStatus.opLatencies.commands?.latency || 0
+          };
+        }
 
         // Reset consecutive failures on successful check
         connectionMetrics.status.consecutiveFailures = 0;
@@ -196,24 +237,19 @@ const connectDB = async () => {
     }
   }, 30000); // Check every 30 seconds
   
-  // Enhanced cleanup function with timeout and metrics logging
+  // Simplified cleanup function with direct connection close
   const cleanup = async () => {
     isShuttingDown = true;
     clearInterval(healthCheckInterval);
     
-    if (mongoose.connection.readyState === 1) { // Connected
+    if (mongoose.connection.readyState === 1) {
       console.log('Initiating MongoDB connection cleanup', {
         timestamp: new Date().toISOString(),
         metrics: connectionMetrics
       });
       
       try {
-        await Promise.race([
-          mongoose.connection.close(),
-          new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('Connection close timeout')), 5000)
-          )
-        ]);
+        await mongoose.connection.close();
         console.log('MongoDB connection closed gracefully', {
           timestamp: new Date().toISOString(),
           finalMetrics: connectionMetrics
@@ -252,22 +288,14 @@ const connectDB = async () => {
   
   while (retries < maxRetries) {
     try {
-      // Connect to MongoDB with enhanced options for better reliability
+      // Connect to MongoDB with simplified essential options
       await mongoose.connect(config.MONGODB_URI, {
-        serverSelectionTimeoutMS: 5000,
-        connectTimeoutMS: 10000,
-        socketTimeoutMS: 45000,
-        heartbeatFrequencyMS: 30000,
         maxPoolSize: 10,
         minPoolSize: 2,
-        maxIdleTimeMS: 45000,
-        waitQueueTimeoutMS: 5000,
-        autoIndex: true,
         retryWrites: true,
         retryReads: true,
         w: 'majority',
-        keepAlive: true,
-        keepAliveInitialDelay: 300000
+        keepAlive: true
       });
       
       console.log('MongoDB connection options configured successfully');

@@ -60,7 +60,38 @@ let serverState = {
     },
     requestsPerSecond: 0,
     peakRequestsPerSecond: 0,
-    byEndpoint: {}
+    byEndpoint: {},
+    timeWindows: {
+      lastMinute: {
+        requests: 0,
+        errors: 0,
+        avgResponseTime: 0
+      },
+      lastHour: {
+        requests: 0,
+        errors: 0,
+        avgResponseTime: 0
+      },
+      lastDay: {
+        requests: 0,
+        errors: 0,
+        avgResponseTime: 0
+      }
+    },
+    resourceUtilization: {
+      memory: {
+        usage: [],
+        trend: 0
+      },
+      cpu: {
+        usage: [],
+        trend: 0
+      },
+      eventLoop: {
+        latency: 0,
+        lag: 0
+      }
+    }
   },
   resources: {
     memory: {
@@ -87,78 +118,33 @@ let serverState = {
     console.log('Initializing server...');
     serverState.startTime = new Date();
     
-    // Connect to MongoDB with enhanced timeout and retry logic
+    // Set up all middleware in a single location
+    const setupMiddleware = () => {
+      app.use(cors());
+      app.use(helmet());
+      app.use(morgan('dev'));
+      app.use(bodyParser.json());
+      app.use(bodyParser.urlencoded({ extended: true }));
+      app.use(passport.initialize());
+      require('./config/passport.config');
+      swaggerSetup(app);
+    };
+
+    // Initialize middleware
+    setupMiddleware();
+
+    // Connect to MongoDB with simplified error handling
     console.log('Connecting to MongoDB...');
     try {
-      const dbConnection = await Promise.race([
-        connectDB(),
-        new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Database connection timeout')), 30000)
-        )
-      ]);
-      
-      if (!dbConnection) {
-        console.warn('Starting server with limited functionality - database connection not available', {
-          timestamp: new Date().toISOString(),
-          impact: 'Some features requiring database access will be disabled',
-          retryInfo: 'Server will attempt to reconnect in the background'
-        });
-
-        // Schedule background reconnection attempts
-        const reconnectInterval = setInterval(async () => {
-          if (!serverState.dbConnection && !serverState.isShuttingDown) {
-            console.log('Attempting background database reconnection...');
-            try {
-              const reconnected = await connectDB();
-              if (reconnected) {
-                serverState.dbConnection = reconnected;
-                console.log('Background database reconnection successful');
-                clearInterval(reconnectInterval);
-              }
-            } catch (error) {
-              console.error('Background reconnection attempt failed:', error.message);
-            }
-          } else if (serverState.dbConnection || serverState.isShuttingDown) {
-            clearInterval(reconnectInterval);
-          }
-        }, 60000); // Try every minute
-      } else {
+      const dbConnection = await connectDB();
+      if (dbConnection) {
         serverState.dbConnection = dbConnection;
-        console.log('Database connection established successfully', {
-          timestamp: new Date().toISOString(),
-          connectionInfo: {
-            readyState: dbConnection.readyState,
-            models: Object.keys(dbConnection.models).length
-          }
-        });
+        console.log('Database connection established successfully');
       }
     } catch (dbError) {
-      console.error('Database connection error:', {
-        timestamp: new Date().toISOString(),
-        error: dbError.message,
-        type: dbError.name,
-        code: dbError.code
-      });
-      console.warn('Starting server with limited functionality - database connection failed', {
-        timestamp: new Date().toISOString(),
-        impact: 'Some features requiring database access will be disabled',
-        retryInfo: 'Server will attempt to reconnect in the background'
-      });
+      console.error('Database connection error:', dbError.message);
+      console.warn('Starting server with limited functionality - database connection failed');
     }
-
-    // Set up middleware
-    app.use(cors());
-    app.use(helmet());
-    app.use(morgan('dev'));
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: true }));
-
-    // Initialize Passport
-    app.use(passport.initialize());
-    require('./config/passport.config');
-
-    // Set up Swagger documentation
-    swaggerSetup(app);
 
     // Set up routes
     app.use('/api', routes);
@@ -232,7 +218,7 @@ let serverState = {
         };
       }
 
-      // Update requests per second
+      // Update requests per second with time-window tracking
       const now = Date.now();
       const requestsLastSecond = serverState.totalRequests - (serverState.performance.lastRequestCount || 0);
       serverState.performance.requestsPerSecond = requestsLastSecond;
@@ -240,6 +226,40 @@ let serverState = {
         serverState.performance.peakRequestsPerSecond = requestsLastSecond;
       }
       serverState.performance.lastRequestCount = serverState.totalRequests;
+
+      // Update time-window metrics
+      const timeWindows = serverState.performance.timeWindows;
+      timeWindows.lastMinute = {
+        requests: serverState.totalRequests - (serverState._lastMinuteTotal || 0),
+        errors: serverState.errors.count - (serverState._lastMinuteErrors || 0),
+        avgResponseTime: serverState.performance.avgResponseTime
+      };
+      serverState._lastMinuteTotal = serverState.totalRequests;
+      serverState._lastMinuteErrors = serverState.errors.count;
+
+      // Update hourly metrics
+      if (!serverState._lastHourUpdate || (now - serverState._lastHourUpdate) >= 3600000) {
+        timeWindows.lastHour = {
+          requests: serverState.totalRequests - (serverState._lastHourTotal || 0),
+          errors: serverState.errors.count - (serverState._lastHourErrors || 0),
+          avgResponseTime: serverState.performance.avgResponseTime
+        };
+        serverState._lastHourTotal = serverState.totalRequests;
+        serverState._lastHourErrors = serverState.errors.count;
+        serverState._lastHourUpdate = now;
+      }
+
+      // Update daily metrics
+      if (!serverState._lastDayUpdate || (now - serverState._lastDayUpdate) >= 86400000) {
+        timeWindows.lastDay = {
+          requests: serverState.totalRequests - (serverState._lastDayTotal || 0),
+          errors: serverState.errors.count - (serverState._lastDayErrors || 0),
+          avgResponseTime: serverState.performance.avgResponseTime
+        };
+        serverState._lastDayTotal = serverState.totalRequests;
+        serverState._lastDayErrors = serverState.errors.count;
+        serverState._lastDayUpdate = now;
+      }
 
       res.on('finish', () => {
         const duration = Date.now() - start;
@@ -291,19 +311,56 @@ let serverState = {
       serverState.lastHealthCheck = now;
       serverState.performance.lastMinuteRequests = serverState.totalRequests;
 
-      // Update resource metrics
+      // Update resource metrics with enhanced tracking
       const memoryUsage = process.memoryUsage();
-      serverState.resources.memory.used = memoryUsage.heapUsed;
+      const currentMemoryUsage = memoryUsage.heapUsed;
+      serverState.resources.memory.used = currentMemoryUsage;
       serverState.resources.memory.total = memoryUsage.heapTotal;
-      if (memoryUsage.heapUsed > serverState.resources.memory.peak) {
-        serverState.resources.memory.peak = memoryUsage.heapUsed;
+      if (currentMemoryUsage > serverState.resources.memory.peak) {
+        serverState.resources.memory.peak = currentMemoryUsage;
+      }
+
+      // Track memory usage history (keep last 60 samples)
+      serverState.performance.resourceUtilization.memory.usage.push(currentMemoryUsage);
+      if (serverState.performance.resourceUtilization.memory.usage.length > 60) {
+        serverState.performance.resourceUtilization.memory.usage.shift();
+      }
+
+      // Calculate memory usage trend
+      const memoryUsageHistory = serverState.performance.resourceUtilization.memory.usage;
+      if (memoryUsageHistory.length >= 2) {
+        const memoryTrend = (memoryUsageHistory[memoryUsageHistory.length - 1] - memoryUsageHistory[0]) / memoryUsageHistory.length;
+        serverState.performance.resourceUtilization.memory.trend = memoryTrend;
       }
 
       const cpuUsage = process.cpuUsage();
-      serverState.resources.cpu.usage = (cpuUsage.user + cpuUsage.system) / 1000000; // Convert to seconds
-      if (serverState.resources.cpu.usage > serverState.resources.cpu.peak) {
-        serverState.resources.cpu.peak = serverState.resources.cpu.usage;
+      const currentCpuUsage = (cpuUsage.user + cpuUsage.system) / 1000000; // Convert to seconds
+      serverState.resources.cpu.usage = currentCpuUsage;
+      if (currentCpuUsage > serverState.resources.cpu.peak) {
+        serverState.resources.cpu.peak = currentCpuUsage;
       }
+
+      // Track CPU usage history (keep last 60 samples)
+      serverState.performance.resourceUtilization.cpu.usage.push(currentCpuUsage);
+      if (serverState.performance.resourceUtilization.cpu.usage.length > 60) {
+        serverState.performance.resourceUtilization.cpu.usage.shift();
+      }
+
+      // Calculate CPU usage trend
+      const cpuUsageHistory = serverState.performance.resourceUtilization.cpu.usage;
+      if (cpuUsageHistory.length >= 2) {
+        const cpuTrend = (cpuUsageHistory[cpuUsageHistory.length - 1] - cpuUsageHistory[0]) / cpuUsageHistory.length;
+        serverState.performance.resourceUtilization.cpu.trend = cpuTrend;
+      }
+
+      // Monitor event loop health
+      const start = process.hrtime();
+      setImmediate(() => {
+        const [seconds, nanoseconds] = process.hrtime(start);
+        const latency = seconds * 1000 + nanoseconds / 1000000; // Convert to milliseconds
+        serverState.performance.resourceUtilization.eventLoop.latency = latency;
+        serverState.performance.resourceUtilization.eventLoop.lag = Math.max(0, latency - 1); // Anything above 1ms is considered lag
+      });
 
       // Get enhanced database connection status
       const dbStatus = serverState.dbConnection ? {
@@ -484,4 +541,3 @@ process.on('SIGINT', () => {
   console.log('Received SIGINT signal');
   cleanup(0);
 });
-
