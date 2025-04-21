@@ -83,13 +83,10 @@ components:
       properties:
         region:
           type: string
-          description: Region
+          description: Country
         session_stringvalue:
           type: string
           description: Id of the user's encrypted session
-        Country:
-          type: string
-          description: Country
         session_parametername:
           type: string
           description: HKS

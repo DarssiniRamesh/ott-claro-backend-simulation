@@ -119,31 +119,26 @@ To obtain a token, use the authentication endpoints:
 
 ### 1. User Start Header Info
 
-Initialize user session with device and region information.
+Provides geolocation/region and session values for the user.
 
-**Endpoint:** POST /user/startheaderinfo
+**Endpoint:** GET /user/startheaderinfo
 
-**Request Schema:**
-```typescript
-{
-  deviceId: string;
-  region: string;
-  platform: string;
-  appVersion: string;
-}
-```
+**Authentication Parameters:**
+- authpn: Authentication parameter name
+- authpt: Authentication parameter token
 
 **Response Schema:**
-```typescript
+```json
 {
-  status: "success";
-  data: {
-    userId: string;
-    displayName: string;
-    avatar: string;
-    notifications: number;
-    region: string;
-    deviceId: string;
+  "status": "success",
+  "data": {
+    "region": "string",
+    "session_stringvalue": "string",
+    "session_parametername": "string",
+    "date": "string",
+    "time": "string",
+    "timezone": "string",
+    "utc": "string"
   }
 }
 ```

@@ -11,8 +11,19 @@ export class UserController {
 
     /**
      * Handle GET request for user start header info
-     * @param req Express Request object
-     * @param res Express Response object
+     * @param {Request} req - Express Request object containing query parameters:
+     *   - {string} authpn - Vendor Authentication User (tataelxsi)
+     *   - {string} authpt - Encrypted vendor authentication key (vofee7ohhecai)
+     * @param {Response} res - Express Response object
+     * @returns {Promise<void>} Sends JSON response with:
+     *   - {string} region - Country
+     *   - {string} session_stringvalue - HKS Value
+     *   - {string} session_parametername - HKS
+     *   - {string} date - Date of the region
+     *   - {string} time - Time of the region
+     *   - {string} timezone - Timezone of the region
+     *   - {string} utc - UTC value
+     * @throws {Error} When authentication parameters are missing or invalid
      */
     public async getStartHeaderInfo(req: Request, res: Response): Promise<void> {
         try {
