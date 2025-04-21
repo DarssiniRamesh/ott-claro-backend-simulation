@@ -5,8 +5,8 @@ const rateLimiters = require('../middleware/rateLimit');
 
 const router = express.Router();
 
-// POST /user/startheaderinfo
-router.post(
+// GET /user/startheaderinfo
+router.get(
   '/startheaderinfo',
   rateLimiters.userStartHeader,
   validate('userStartHeader'),

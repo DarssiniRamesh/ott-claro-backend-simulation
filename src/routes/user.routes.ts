@@ -19,6 +19,6 @@ const userController = new UserController();
  *   - {string} timezone - Timezone of the region
  *   - {string} utc - UTC value
  */
-router.get('/user/startheaderinfo', (req, res) => userController.getStartHeaderInfo(req, res));
+router.get('/startheaderinfo', (req, res) => userController.getStartHeaderInfo(req, res));
 
 export default router;

@@ -15,11 +15,11 @@ describe('API Endpoints', () => {
     authToken = loginResponse.body.token;
   });
 
-  describe('POST /user/startheaderinfo', () => {
+  describe('GET /user/startheaderinfo', () => {
     it('should return 401 without auth token', async () => {
       const response = await request(app)
-        .post('/user/startheaderinfo')
-        .send({
+        .get('/user/startheaderinfo')
+        .query({
           deviceId: 'test-device',
           region: 'US'
         });
@@ -28,9 +28,9 @@ describe('API Endpoints', () => {
 
     it('should return 200 with valid auth token and data', async () => {
       const response = await request(app)
-        .post('/user/startheaderinfo')
+        .get('/user/startheaderinfo')
         .set('Authorization', `Bearer ${authToken}`)
-        .send({
+        .query({
           deviceId: 'test-device',
           region: 'US'
         });
@@ -40,9 +40,9 @@ describe('API Endpoints', () => {
 
     it('should return 400 with invalid input', async () => {
       const response = await request(app)
-        .post('/user/startheaderinfo')
+        .get('/user/startheaderinfo')
         .set('Authorization', `Bearer ${authToken}`)
-        .send({
+        .query({
           deviceId: '',
           region: ''
         });

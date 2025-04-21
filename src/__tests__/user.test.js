@@ -10,8 +10,8 @@ describe('User API Endpoints', () => {
     authToken = generateToken({ id: 'test-user-id' });
   });
 
-  describe('POST /user/startheaderinfo', () => {
-    const validPayload = {
+  describe('GET /user/startheaderinfo', () => {
+    const validParams = {
       deviceId: 'test-device-123',
       region: 'US',
       platform: 'android',
@@ -20,8 +20,8 @@ describe('User API Endpoints', () => {
 
     it('should return 401 without auth token', async () => {
       const response = await request(app)
-        .post('/user/startheaderinfo')
-        .send(validPayload);
+        .get('/user/startheaderinfo')
+        .query(validParams);
       
       expect(response.status).toBe(401);
       expect(response.body).toHaveProperty('message');
@@ -29,24 +29,24 @@ describe('User API Endpoints', () => {
 
     it('should return 200 with valid auth token and data', async () => {
       const response = await request(app)
-        .post('/user/startheaderinfo')
+        .get('/user/startheaderinfo')
         .set('Authorization', `Bearer ${authToken}`)
-        .send(validPayload);
+        .query(validParams);
       
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('status', 'success');
       expect(response.body.data).toHaveProperty('headerInfo');
       expect(response.body.data.headerInfo).toMatchObject({
-        deviceId: validPayload.deviceId,
-        region: validPayload.region
+        deviceId: validParams.deviceId,
+        region: validParams.region
       });
     });
 
     it('should return 400 with missing required fields', async () => {
       const response = await request(app)
-        .post('/user/startheaderinfo')
+        .get('/user/startheaderinfo')
         .set('Authorization', `Bearer ${authToken}`)
-        .send({
+        .query({
           deviceId: 'test-device'
           // missing region, platform, and appVersion
         });
@@ -57,19 +57,17 @@ describe('User API Endpoints', () => {
 
     it('should return 400 with invalid field values', async () => {
       const response = await request(app)
-        .post('/user/startheaderinfo')
+        .get('/user/startheaderinfo')
         .set('Authorization', `Bearer ${authToken}`)
-        .send({
-          ...validPayload,
+        .query({
+          ...validParams,
           deviceId: '' // empty device ID
         });
       
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('message');
     });
-  });
 
-  describe('GET /user/startheaderinfo', () => {
     it('should return 401 without auth token', async () => {
       const response = await request(app)
         .get('/user/startheaderinfo');
