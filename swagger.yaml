@@ -3,11 +3,15 @@ info:
   title: Video OTT Platform API
   version: 1.0.0
   description: Mock API server for Video OTT Platform providing authentication, content management, and streaming services
+
 servers:
   - url: https://api.videoott.com/v1
+    description: Production server
+
 security:
   - bearerAuth: []
   - authpt: []
+
 components:
   securitySchemes:
     bearerAuth:
@@ -18,6 +22,7 @@ components:
       type: apiKey
       in: header
       name: X-Auth-Key
+
   headers:
     X-RateLimit-Limit:
       schema:
@@ -27,201 +32,72 @@ components:
       schema:
         type: integer
       description: Remaining requests in the current time window
+
   schemas:
     Error:
       type: object
       properties:
-        code:
-          type: integer
+        status:
+          type: string
+          enum: [error]
         message:
           type: string
-    DeviceAuthInfo:
-      type: object
-      properties:
-        authpn:
+          description: Error message description
+        code:
           type: string
-          description: Vendor Authentication User
-          example: tataelxsi
-        authpt:
-          type: string
-          description: Encrypted vendor authentication key
-          example: vofee7ohhecai
-        device_category:
-          type: string
-          description: Device type. 'stb' for set-top box, 'ptv' for IPTV, 'ott' for OTT user
-          example: stb
-        device_type:
-          type: string
-          description: Device type
-          example: stb
-        device_model:
-          type: string
-          description: Model of the device
-          example: androidTV
-        device_manufacturer:
-          type: string
-          description: Manufacturer of the device
-          example: ZTE
-        api_version:
-          type: string
-          description: API version
-          example: v5.93
-        region:
-          type: string
-          description: Region, fetched from user/startheaderinfo API -> region node
-          example: Asia/Kolkata
-        user_id:
-          type: integer
-          description: User ID, fetched from user/isloggedin API -> user_id node
-          example: 12345678
-        sessionKey:
-          type: string
-          description: Device hash required to load configuration
-          example: abcd1234efgh5678ijkl9012mnop3456
+          description: Optional error code for specific error types
+
     SessionInfo:
       type: object
       properties:
         region:
           type: string
-          description: Region/Country information
+          description: Country
         session_stringvalue:
           type: string
-          description: Id of the user's encrypted session
+          description: HKS Value - Id of the user's encrypted session.
         session_parametername:
           type: string
-          description: Session parameter name
+          description: HKS
         date:
           type: string
-          description: Current date in the region
+          description: Date of the region
         time:
           type: string
-          description: Current time in the region
+          description: Time of the region
         timezone:
           type: string
           description: Timezone of the region
         utc:
           type: string
           description: UTC value
-    AssetConfig:
-      type: object
-      properties:
-        assets:
-          type: string
-          description: Key-value(s) of configuration item. The number of 'assets' values depends on the quantity of configuration item(s) configured on APA Admin
-    NavigationResponse:
-      type: object
-      properties:
-        entry:
-          type: object
-          description: Input Parameters
-        response:
-          type: object
-          description: Response Data
-        status:
-          type: integer
-          description: Response status (0: OK, 1: ERROR)
-        msg:
-          type: string
-          description: Response status message (OK or ERROR)
-    MetadataConfig:
-      type: object
-      properties:
-        translations:
-          type: array
-          items:
-            type: object
-            additionalProperties:
-              type: string
-          description: List of key-value pairs related to translations configured on APA Admin
-        sprites_configuration:
-          type: string
-          description: Settings for width, height, and offset values used when fetching sprite images for VOD content
-        atv_hide_pack_logo:
-          type: string
-          description: Controls whether the channel logo is hidden in select plans
-        third_party_epg_apps:
-          type: string
-          description: Provides package info about third-party apps displayed across the application screen
-        logs_dashboard_url:
-          type: string
-          description: URL used for In-House Analytics API
-        lms_bootstrap_url:
-          type: string
-          description: Used in multicasting
-        byr_filterlist_configuration:
-          type: string
-          description: Region-based filter list fetched and appended to search/predictive API formation
-        time_to_get_favs:
-          type: string
-          description: Interval for calling user/favoritedlive API periodically
-        sentinel_reminders_interval:
-          type: string
-          description: Interval for calling user/reminder/list API periodically
-        pin_use_channel_rating_flow:
-          type: string
-          description: Interval for calling user/controlpin/channels/list periodically
-        time_to_get_recordings:
-          type: string
-          description: Interval for calling recordings/list periodically
-        onboarding:
-          type: string
-          description: Used when calling authDevice for Argentina region onboarding
-        interval_time_check_epg_version:
-          type: string
-          description: Interval for calling epg/version API periodically
-        interval_time_check_lineal_channels:
-          type: string
-          description: Interval for calling payway/lineal API periodically
-        fast_forward_rewind_option:
-          type: string
-          description: Fast forward and rewind seek time intervals
-        supported_stream:
-          type: string
-          description: Used for prioritizing live player URLs
-        isloggedin_refresh_hours_time:
-          type: string
-          description: Interval for calling user/isloggedin API periodically
-        atv_max_buffer_ms:
-          type: string
-          description: Exoplayer buffer duration - maximum
-        atv_min_buffer_ms:
-          type: string
-          description: Exoplayer buffer duration - minimum
-        atv_rebuffer_ms:
-          type: string
-          description: Exoplayer buffer duration - rebuffer
-        atv_start_buffer_ms:
-          type: string
-          description: Exoplayer buffer duration - start buffer
-        myaccount_configuration:
-          type: string
-          description: Used to filter packs from payway/purchasebuttoninfo based on provider for display in select plans
-        fallback_interval_time:
-          type: string
-          description: Live TV buffer time
+
 paths:
   /user/startheaderinfo:
     get:
       summary: Initialize user session with device and region information
       description: The service provides geolocation/region and session values.
+      security:
+        - bearerAuth: []
+        - authpt: []
       parameters:
         - name: authpn
           in: query
           required: true
-          description: Vendor Authentication User
           schema:
             type: string
+          description: "Vendor Authentication User. Value is 'tataelxsi'."
           example: tataelxsi
         - name: authpt
           in: query
           required: true
-          description: Encrypted vendor authentication key
           schema:
             type: string
+          description: "Encrypted vendor authentication key. Value is 'vofee7ohhecai'."
           example: vofee7ohhecai
       responses:
         '200':
-          description: Successful response
+          description: Session initialized successfully
           headers:
             X-RateLimit-Limit:
               $ref: '#/components/headers/X-RateLimit-Limit'
@@ -232,256 +108,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/SessionInfo'
         '400':
-          description: Bad Request - Invalid authentication parameters
+          description: Invalid request parameters
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /apa/asset:
-    get:
-      summary: Get asset configuration
-      parameters:
-        - name: authpn
-          in: query
-          required: true
-          description: Vendor Authentication User. Value is 'tataelxsi'
-          schema:
-            type: string
-        - name: authpt
-          in: query
-          required: true
-          description: Encrypted vendor authentication key. Value is 'vofee7ohhecai'
-          schema:
-            type: string
-        - name: device_category
-          in: query
-          required: true
-          schema:
-            type: string
-            enum: [stb, ptv, ott]
-          description: Device category
-        - name: device_type
-          in: query
-          required: true
-          description: Type of device. Value will be 'ptv' for IPTV user and 'ott' for OTT user
-          schema:
-            type: string
-        - name: device_model
-          in: query
-          required: true
-          description: Device model. Value is 'androidTV'
-          schema:
-            type: string
-        - name: device_manufacturer
-          in: query
-          required: true
-          description: Manufacturer of the device. Value is 'ZTE'
-          schema:
-            type: string
-        - name: api_version
-          in: query
-          required: true
-          description: API version. Value is 'v5.93'
-          schema:
-            type: string
-        - name: region
-          in: query
-          required: true
-          description: Region fetched from user/startheaderinfo API -> region node
-          schema:
-            type: string
-        - name: user_id
-          in: query
-          required: true
-          description: User ID fetched from user/isloggedin API -> user_id node
-          schema:
-            type: integer
-        - name: sessionKey
-          in: query
-          required: true
-          description: Device's hash required to load configuration
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Asset configuration retrieved successfully
-          headers:
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/X-RateLimit-Limit'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/X-RateLimit-Remaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AssetConfig'
-        '400':
-          description: Bad Request - Invalid parameters
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '404':
-          description: Asset not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /apa/metadata:
-    get:
-      summary: Get metadata configuration
-      parameters:
-        - name: authpn
-          in: query
-          required: true
-          description: Vendor Authentication User. Value is 'tataelxsi'
-          schema:
-            type: string
-        - name: authpt
-          in: query
-          required: true
-          description: Encrypted vendor authentication key. Value is 'vofee7ohhecai'
-          schema:
-            type: string
-        - name: device_category
-          in: query
-          required: true
-          description: Device category. Value is 'stb'
-          schema:
-            type: string
-        - name: device_type
-          in: query
-          required: true
-          description: Device type. Value will be 'ptv' for IPTV user and 'ott' for OTT user
-          schema:
-            type: string
-        - name: device_model
-          in: query
-          required: true
-          description: Device model. Value is 'androidTV'
-          schema:
-            type: string
-        - name: device_manufacturer
-          in: query
-          required: true
-          description: Manufacturer of the device. Value is 'ZTE'
-          schema:
-            type: string
-        - name: api_version
-          in: query
-          required: true
-          description: API version. Value is 'v5.93'
-          schema:
-            type: string
-        - name: region
-          in: query
-          required: true
-          description: Region fetched from user/startheaderinfo API -> region node
-          schema:
-            type: string
-        - name: user_id
-          in: query
-          required: true
-          description: User ID fetched from user/isloggedin API -> user_id node
-          schema:
-            type: integer
-        - name: sessionKey
-          in: query
-          required: true
-          description: Device's hash required to load configuration
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Metadata configuration retrieved successfully
-          headers:
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/X-RateLimit-Limit'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/X-RateLimit-Remaining'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MetadataConfig'
-        '400':
-          description: Bad Request - Invalid parameters
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /nav/data:
-    get:
-      summary: Retrieve navigation structure
-      description: Returns the node structure of tabs for navigation, detailing user navigation options such as home, sports, apps, etc.
-      parameters:
-        - name: authpn
-          in: query
-          required: true
-          description: Vendor Authentication User. Value is 'tataelxsi'
-          schema:
-            type: string
-        - name: authpt
-          in: query
-          required: true
-          description: Encrypted vendor authentication key. Value is 'vofee7ohhecai'
-          schema:
-            type: string
-        - name: device_category
-          in: query
-          required: true
-          description: Device category. Value is 'stb'
-          schema:
-            type: string
-        - name: device_type
-          in: query
-          required: true
-          description: Type of device. Value is 'ptv' for IPTV user and 'ott' for OTT user
-          schema:
-            type: string
-        - name: device_model
-          in: query
-          required: true
-          description: Device model. Value is 'androidTV'
-          schema:
-            type: string
-        - name: device_manufacturer
-          in: query
-          required: true
-          description: Manufacturer of the device. Value is 'ZTE'
-          schema:
-            type: string
-        - name: session_key
-          in: query
-          required: true
-          description: Session key fetched from user/isloggedin API
-          schema:
-            type: string
-        - name: api_version
-          in: query
-          required: true
-          description: API version. Value is 'v5.93'
-          schema:
-            type: string
-        - name: region
-          in: query
-          required: true
-          description: Region node fetched from user/startheaderinfo API
-          schema:
-            type: string
-        - name: device_id
-          in: query
-          required: true
-          description: Device Serial Number fetched from android.os.Build file
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Navigation structure retrieved successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NavigationResponse'
-        '400':
-          description: Bad Request - Invalid parameters
+        '401':
+          description: Unauthorized - Invalid or missing authentication
           content:
             application/json:
               schema:

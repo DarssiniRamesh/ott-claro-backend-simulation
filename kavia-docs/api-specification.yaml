@@ -8,6 +8,10 @@ servers:
   - url: https://api.videoott.com/v1
     description: Production server
 
+security:
+  - bearerAuth: []
+  - authpt: []
+
 components:
   securitySchemes:
     bearerAuth:
@@ -33,45 +37,24 @@ components:
           type: string
           description: Optional error code for specific error types
 
-    DeviceAuthInfo:
-      type: object
-      required:
-        - deviceId
-        - region
-        - platform
-        - appVersion
-      properties:
-        deviceId:
-          type: string
-          description: Unique device identifier
-        region:
-          type: string
-          description: User's geographic region
-        platform:
-          type: string
-          description: Device platform (e.g., iOS, Android, Web)
-        appVersion:
-          type: string
-          description: Application version number
-
     SessionInfo:
       type: object
       properties:
         region:
           type: string
-          description: Region/Country information
+          description: Country
         session_stringvalue:
           type: string
-          description: Id of the user's encrypted session
+          description: HKS Value - Id of the user's encrypted session.
         session_parametername:
           type: string
-          description: Session parameter name
+          description: HKS
         date:
           type: string
-          description: Current date in the region
+          description: Date of the region
         time:
           type: string
-          description: Current time in the region
+          description: Time of the region
         timezone:
           type: string
           description: Timezone of the region
@@ -229,14 +212,14 @@ paths:
           required: true
           schema:
             type: string
-          description: Vendor Authentication User
+          description: "Vendor Authentication User. Value is 'tataelxsi'."
           example: tataelxsi
         - name: authpt
           in: query
           required: true
           schema:
             type: string
-          description: Encrypted vendor authentication key
+          description: "Encrypted vendor authentication key. Value is 'vofee7ohhecai'."
           example: vofee7ohhecai
       responses:
         '200':
