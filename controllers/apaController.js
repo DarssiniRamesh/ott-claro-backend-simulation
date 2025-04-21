@@ -58,9 +58,23 @@ const getAsset = async (req, res, next) => {
 };
 
 // PUBLIC_INTERFACE
+// PUBLIC_INTERFACE
 const getMetadata = async (req, res, next) => {
   try {
-    const metadata = await apaService.getMetadata();
+    const params = {
+      authpn: req.query.authpn,
+      authpt: req.query.authpt,
+      device_category: req.query.device_category,
+      device_type: req.query.device_type,
+      device_model: req.query.device_model,
+      device_manufacturer: req.query.device_manufacturer,
+      api_version: req.query.api_version,
+      region: req.query.region,
+      user_id: req.query.user_id,
+      sessionKey: req.query.sessionKey
+    };
+
+    const metadata = await apaService.getMetadata(params);
     res.json(metadata);
   } catch (error) {
     next(error);
