@@ -1,69 +1,38 @@
 openapi: 3.0.0
 info:
-  title: OTT Claro Backend API
-  description: |
-    API Core Component for OTT Claro Backend providing user session management,
-    navigation structure, asset configuration, and metadata services.
+  title: Video OTT Platform API
   version: 1.0.0
+  description: Mock API server for Video OTT Platform providing authentication, content management, and streaming services
 
 servers:
-  - url: /api/v1
-    description: Base API path
+  - url: http://localhost:3000
+    description: Local development server
 
 components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-
   schemas:
     Error:
       type: object
       properties:
         code:
-          type: string
-          description: Error code
+          type: integer
+          format: int32
         message:
           type: string
-          description: Error message
-
     StartHeaderInfo:
       type: object
-      required:
-        - deviceId
-        - region
-        - platform
       properties:
         deviceId:
           type: string
-          description: Unique device identifier
+          description: Unique identifier for the device
         region:
           type: string
           description: User's region code
         platform:
           type: string
           description: Device platform (iOS, Android, Web, etc.)
-        language:
+        version:
           type: string
-          description: Preferred language code
-        model:
-          type: string
-          description: Device model information
-
-    StartHeaderResponse:
-      type: object
-      properties:
-        sessionToken:
-          type: string
-          description: Session token for subsequent requests
-        expiresIn:
-          type: integer
-          description: Token expiration time in seconds
-        settings:
-          type: object
-          description: User and device specific settings
-
+          description: App version
     NavigationData:
       type: object
       properties:
@@ -82,40 +51,49 @@ components:
                 type: array
                 items:
                   $ref: '#/components/schemas/NavigationData'
-
     AssetConfig:
       type: object
       properties:
-        formats:
+        assetId:
+          type: string
+        streamingUrl:
+          type: string
+        quality:
+          type: string
+        drm:
+          type: object
+        subtitles:
           type: array
           items:
             type: object
             properties:
-              type:
+              language:
                 type: string
-              quality:
+              url:
                 type: string
-              codec:
-                type: string
-        drm:
-          type: object
-          properties:
-            provider:
-              type: string
-            settings:
-              type: object
-
     MetadataConfig:
       type: object
       properties:
-        fields:
+        contentId:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        duration:
+          type: integer
+        rating:
+          type: string
+        genres:
           type: array
           items:
             type: string
-        localization:
-          type: object
-        formatting:
-          type: object
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 
 security:
   - bearerAuth: []
@@ -124,6 +102,8 @@ paths:
   /user/startheaderinfo:
     post:
       summary: Initialize user session with device and region information
+      description: Creates a new session with the provided device and region information
+      operationId: startHeaderInfo
       tags:
         - User Session
       requestBody:
@@ -138,15 +118,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StartHeaderResponse'
+                type: object
+                properties:
+                  sessionId:
+                    type: string
+                  token:
+                    type: string
         '400':
           description: Invalid request parameters
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
           content:
             application/json:
               schema:
@@ -155,19 +134,10 @@ paths:
   /nav/data:
     get:
       summary: Retrieve hierarchical navigation structure
+      description: Returns the complete navigation structure for the application
+      operationId: getNavigationData
       tags:
         - Navigation
-      parameters:
-        - in: query
-          name: language
-          schema:
-            type: string
-          description: Language code for localized content
-        - in: query
-          name: region
-          schema:
-            type: string
-          description: Region code for filtered content
       responses:
         '200':
           description: Navigation structure retrieved successfully
@@ -181,31 +151,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
 
   /apa/asset:
     get:
       summary: Get device-specific asset configurations
+      description: Returns asset configuration based on device capabilities
+      operationId: getAssetConfig
       tags:
-        - Asset Configuration
+        - Asset Management
       parameters:
-        - in: query
-          name: deviceType
+        - name: assetId
+          in: query
           required: true
           schema:
             type: string
-          description: Type of device requesting asset configuration
-        - in: query
-          name: assetId
+        - name: deviceType
+          in: query
           required: true
           schema:
             type: string
-          description: ID of the asset to configure
       responses:
         '200':
           description: Asset configuration retrieved successfully
@@ -213,20 +177,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AssetConfig'
-        '400':
-          description: Invalid request parameters
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
+        '404':
+          description: Asset not found
           content:
             application/json:
               schema:
@@ -235,46 +187,25 @@ paths:
   /apa/metadata:
     get:
       summary: Retrieve content metadata and parameters
+      description: Returns metadata information for specified content
+      operationId: getMetadataConfig
       tags:
-        - Metadata Configuration
+        - Content Management
       parameters:
-        - in: query
-          name: contentId
+        - name: contentId
+          in: query
           required: true
           schema:
             type: string
-          description: ID of the content to retrieve metadata for
-        - in: query
-          name: type
-          schema:
-            type: string
-          description: Type of content (movie, series, episode, etc.)
-        - in: query
-          name: language
-          schema:
-            type: string
-          description: Language code for localized metadata
       responses:
         '200':
-          description: Metadata configuration retrieved successfully
+          description: Metadata retrieved successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/MetadataConfig'
-        '400':
-          description: Invalid request parameters
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
+        '404':
+          description: Content not found
           content:
             application/json:
               schema:
