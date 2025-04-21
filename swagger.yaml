@@ -202,23 +202,70 @@ components:
 paths:
   /user/startheaderinfo:
     get:
-      summary: Get user session and geolocation information
-      description: Retrieves user's region, session information, and timezone details
+      summary: Initialize user session with device and region information
+      description: Creates a new user session and returns user profile information based on device and region details
       parameters:
         - name: authpn
           in: query
           required: true
-          description: Vendor Authentication User. Value must be 'tataelxsi'
+          description: Vendor Authentication User
           schema:
             type: string
-            example: tataelxsi
         - name: authpt
           in: query
           required: true
-          description: Encrypted vendor authentication key. Value must be 'vofee7ohhecai'
+          description: Encrypted vendor authentication key
           schema:
             type: string
-            example: vofee7ohhecai
+        - name: device_category
+          in: query
+          required: true
+          description: Device type. 'stb' for set-top box, 'ptv' for IPTV, 'ott' for OTT user
+          schema:
+            type: string
+            enum: [stb, ptv, ott]
+        - name: device_type
+          in: query
+          required: true
+          description: Device type
+          schema:
+            type: string
+        - name: device_model
+          in: query
+          required: true
+          description: Model of the device
+          schema:
+            type: string
+        - name: device_manufacturer
+          in: query
+          required: true
+          description: Manufacturer of the device
+          schema:
+            type: string
+        - name: api_version
+          in: query
+          required: true
+          description: API version
+          schema:
+            type: string
+        - name: region
+          in: query
+          required: true
+          description: Region, fetched from user/startheaderinfo API -> region node
+          schema:
+            type: string
+        - name: user_id
+          in: query
+          required: true
+          description: User ID, fetched from user/isloggedin API -> user_id node
+          schema:
+            type: integer
+        - name: sessionKey
+          in: query
+          required: true
+          description: Device hash required to load configuration
+          schema:
+            type: string
       responses:
         '200':
           description: Successful response
