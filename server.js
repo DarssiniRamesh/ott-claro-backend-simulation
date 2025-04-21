@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpecs = require('./swagger');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -15,6 +17,9 @@ app.use(morgan('dev'));
 const userRoutes = require('./routes/userRoutes');
 const navRoutes = require('./routes/navRoutes');
 const apaRoutes = require('./routes/apaRoutes');
+
+// Swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to OTT Claro Backend Simulation API' });

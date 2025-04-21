@@ -3,7 +3,10 @@ const userService = require('../services/userService');
 // PUBLIC_INTERFACE
 const startHeaderInfo = async (req, res, next) => {
   try {
-    const { deviceInfo, region } = req.body;
+    const { deviceInfo, region } = req.query;
+    
+    // Parse deviceInfo if it's a string (since query parameters are strings)
+    const parsedDeviceInfo = typeof deviceInfo === 'string' ? JSON.parse(deviceInfo) : deviceInfo;
 
     // Validate required fields
     if (!deviceInfo || !region) {

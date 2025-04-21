@@ -55,18 +55,17 @@ The API Core Component is a robust backend simulation service designed to suppor
 ### 1. User Session Management
 
 #### Start Header Info
-- **Endpoint:** `POST /user/startheaderinfo`
+- **Endpoint:** `GET /user/startheaderinfo`
 - **Purpose:** Initialize user session with device and region information
-- **Request Body:**
-  ```json
-  {
-    "deviceInfo": {
+- **Query Parameters:**
+  - `deviceInfo`: JSON string containing device information (required)
+    ```json
+    {
       "type": "string",
       "model": "string"
-    },
-    "region": "string"
-  }
-  ```
+    }
+    ```
+  - `region`: Geographic region code (required)
 - **Response:** `201 Created`
   ```json
   {
