@@ -57,19 +57,27 @@ components:
     SessionInfo:
       type: object
       properties:
-        userId:
+        region:
           type: string
-          description: Unique user identifier
-        displayName:
+          description: Region/Country information
+        session_stringvalue:
           type: string
-          description: User's display name
-        avatar:
+          description: Id of the user's encrypted session
+        session_parametername:
           type: string
-          format: uri
-          description: URL to user's avatar image
-        notifications:
-          type: integer
-          description: Number of unread notifications
+          description: Session parameter name
+        date:
+          type: string
+          description: Current date in the region
+        time:
+          type: string
+          description: Current time in the region
+        timezone:
+          type: string
+          description: Timezone of the region
+        utc:
+          type: string
+          description: UTC value
 
     NavigationResponse:
       type: object
@@ -211,35 +219,25 @@ paths:
   /user/startheaderinfo:
     get:
       summary: Initialize user session with device and region information
-      description: Creates a new user session and returns user profile information based on device and region details
+      description: The service provides geolocation/region and session values.
       security:
         - bearerAuth: []
         - authpt: []
       parameters:
-        - name: deviceId
+        - name: authpn
           in: query
           required: true
           schema:
             type: string
-          description: Unique device identifier
-        - name: region
+          description: Vendor Authentication User
+          example: tataelxsi
+        - name: authpt
           in: query
           required: true
           schema:
             type: string
-          description: User's geographic region
-        - name: platform
-          in: query
-          required: true
-          schema:
-            type: string
-          description: Device platform (e.g., iOS, Android, Web)
-        - name: appVersion
-          in: query
-          required: true
-          schema:
-            type: string
-          description: Application version number
+          description: Encrypted vendor authentication key
+          example: vofee7ohhecai
       responses:
         '200':
           description: Session initialized successfully

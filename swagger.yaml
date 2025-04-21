@@ -83,19 +83,19 @@ components:
       properties:
         region:
           type: string
-          description: Country
+          description: Region/Country information
         session_stringvalue:
           type: string
           description: Id of the user's encrypted session
         session_parametername:
           type: string
-          description: HKS
+          description: Session parameter name
         date:
           type: string
-          description: Date of the region
+          description: Current date in the region
         time:
           type: string
-          description: Time of the region
+          description: Current time in the region
         timezone:
           type: string
           description: Timezone of the region
@@ -203,7 +203,7 @@ paths:
   /user/startheaderinfo:
     get:
       summary: Initialize user session with device and region information
-      description: Creates a new user session and returns user profile information based on device and region details
+      description: The service provides geolocation/region and session values.
       parameters:
         - name: authpn
           in: query
@@ -211,61 +211,14 @@ paths:
           description: Vendor Authentication User
           schema:
             type: string
+          example: tataelxsi
         - name: authpt
           in: query
           required: true
           description: Encrypted vendor authentication key
           schema:
             type: string
-        - name: device_category
-          in: query
-          required: true
-          description: Device type. 'stb' for set-top box, 'ptv' for IPTV, 'ott' for OTT user
-          schema:
-            type: string
-            enum: [stb, ptv, ott]
-        - name: device_type
-          in: query
-          required: true
-          description: Device type
-          schema:
-            type: string
-        - name: device_model
-          in: query
-          required: true
-          description: Model of the device
-          schema:
-            type: string
-        - name: device_manufacturer
-          in: query
-          required: true
-          description: Manufacturer of the device
-          schema:
-            type: string
-        - name: api_version
-          in: query
-          required: true
-          description: API version
-          schema:
-            type: string
-        - name: region
-          in: query
-          required: true
-          description: Region, fetched from user/startheaderinfo API -> region node
-          schema:
-            type: string
-        - name: user_id
-          in: query
-          required: true
-          description: User ID, fetched from user/isloggedin API -> user_id node
-          schema:
-            type: integer
-        - name: sessionKey
-          in: query
-          required: true
-          description: Device hash required to load configuration
-          schema:
-            type: string
+          example: vofee7ohhecai
       responses:
         '200':
           description: Successful response
