@@ -26,6 +26,14 @@ export class UserController {
                 return;
             }
 
+            // Validate specific values for authentication parameters
+            if (authpn !== 'tataelxsi' || authpt !== 'vofee7ohhecai') {
+                res.status(401).json({
+                    error: 'Invalid authentication credentials'
+                });
+                return;
+            }
+
             const request: StartHeaderInfoRequest = {
                 authpn: authpn as string,
                 authpt: authpt as string

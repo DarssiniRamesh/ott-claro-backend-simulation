@@ -11,6 +11,6 @@ const userController = new UserController();
  * @query authpn - Vendor Authentication User (tataelxsi)
  * @query authpt - Encrypted vendor authentication key (vofee7ohhecai)
  */
-router.get('/startheaderinfo', (req, res) => userController.getStartHeaderInfo(req, res));
+router.get('/user/startheaderinfo', (req, res) => userController.getStartHeaderInfo(req, res));
 
 export default router;

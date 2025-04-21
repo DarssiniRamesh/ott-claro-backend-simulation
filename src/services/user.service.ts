@@ -7,10 +7,7 @@ export class UserService {
      * @returns StartHeaderInfoResponse with region and session information
      */
     public async getStartHeaderInfo(request: StartHeaderInfoRequest): Promise<StartHeaderInfoResponse> {
-        // Validate vendor authentication
-        if (request.authpn !== 'tataelxsi' || request.authpt !== 'vofee7ohhecai') {
-            throw new Error('Invalid authentication credentials');
-        }
+
 
         // Get current date and time information
         const now = new Date();
