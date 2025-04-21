@@ -1,110 +1,57 @@
 /**
- * Type definitions for API request/response schemas
+ * Type definitions for API request/response interfaces
  */
 
-// User Session Types
-import { IsString, IsNotEmpty, Matches } from 'class-validator';
-
-export class UserSessionRequest {
-  @IsString()
-  @IsNotEmpty()
-  @Matches(/^[A-Za-z0-9-_]{1,64}$/)
+/**
+ * Interface for user session initialization request
+ * Used in POST /user/startheaderinfo endpoint
+ */
+export interface UserSessionRequest {
+  /** Unique device identifier */
   deviceId: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @Matches(/^[A-Z]{2}$/)
+  /** User's geographic region */
   region: string;
-
-  @IsString()
-  @IsNotEmpty()
+  /** Device platform (e.g., iOS, Android, Web) */
   platform: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @Matches(/^\d+\.\d+\.\d+$/)
+  /** Application version number */
   appVersion: string;
 }
 
+/**
+ * Interface for user header information response
+ * Contains user profile and notification data
+ */
 export interface UserHeaderInfo {
+  /** Unique user identifier */
   userId: string;
+  /** User's display name */
   displayName: string;
+  /** URL to user's avatar image */
   avatar: string;
+  /** Number of unread notifications */
   notifications: number;
-  region: string;
-  deviceId: string;
 }
 
-// Navigation Types
-export interface NavigationItem {
-  id: string;
-  title: string;
-  path: string;
-  icon: string;
-  children?: NavigationItem[];
-}
-
-export interface NavigationResponse {
-  navigation: NavigationItem[];
-}
-
-// Asset Types
-export interface AssetRequest {
-  id: string;
-  deviceId: string;
-  resolution?: string;
-  format?: string;
-}
-
-export interface AssetConfig {
-  id: string;
-  title: string;
-  type: 'movie' | 'series';
-  duration: number;
-  streamUrl: string;
-  thumbnailUrl: string;
-  availableUntil: string;
-  isHD: boolean;
-  hasSubtitles: boolean;
-  supportedFormats: string[];
-  supportedResolutions: string[];
-  drm?: {
-    provider: string;
-    token: string;
-  };
-}
-
-// Metadata Types
-export interface MetadataRequest {
-  id: string;
-  language?: string;
-}
-
-export interface ContentMetadata {
-  assetId: string;
-  title: string;
-  description: string;
-  releaseYear: number;
-  genres: string[];
-  cast: string[];
-  director?: string;
-  creator?: string;
-  rating: string;
-  language: string;
-  subtitles: string[];
-  runtime?: string;
-  seasons?: number;
-  episodes?: number;
-  posterUrl: string;
-  trailerUrl: string;
-  tags: string[];
-  popularity: number;
-  averageRating: number;
-}
-
-// Common Response Types
+/**
+ * Generic API response wrapper interface
+ * @template T - Type of the response data
+ */
 export interface ApiResponse<T> {
-  status: 'success' | 'error' | 'fail';
-  message?: string;
-  data?: T;
+  /** Response status (e.g., 'success', 'error') */
+  status: string;
+  /** Response payload */
+  data: T;
+}
+
+/**
+ * Interface for error response
+ * Used when API encounters an error
+ */
+export interface ErrorResponse {
+  /** Error status (always 'error') */
+  status: string;
+  /** Error message description */
+  message: string;
+  /** Optional error code for specific error types */
+  code?: string;
 }
