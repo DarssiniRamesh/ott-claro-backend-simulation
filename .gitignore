@@ -52,3 +52,7 @@ yarn-error.log
 .serverless/
 .fusebox/
 .dynamodb/
+
+# Tool and cache files
+.function_call_history
+.knowledge/
