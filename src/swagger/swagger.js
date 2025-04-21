@@ -108,11 +108,19 @@ const options = {
  */
 
 /**
- * POST /api/user/startheaderinfo
+ * GET /api/user/startheaderinfo
  * @summary Initialize user session with device and region information
  * @tags User Session
- * @param {UserStartHeaderInfo} request.body.required - User session initialization parameters
- * @return {UserStartHeaderResponse} 200 - Success response
+ * @param {string} authpn.query.required - Vendor Authentication User - Example: tataelxsi
+ * @param {string} authpt.query.required - Encrypted vendor authentication key - Example: vofee7ohhecai
+ * @return {object} 200 - Success response
+ * @return {string} 200.region - Country - Example: BR
+ * @return {string} 200.session_stringvalue - HKS Value - Id of the user's encrypted session
+ * @return {string} 200.session_parametername - HKS
+ * @return {string} 200.date - Date of the region
+ * @return {string} 200.time - Time of the region
+ * @return {string} 200.timezone - Timezone of the region
+ * @return {string} 200.utc - UTC value
  * @return {ErrorResponse} 400 - Bad request - Invalid parameters provided
  * @return {ErrorResponse} 429 - Too Many Requests - Rate limit exceeded
  * @return {ErrorResponse} 500 - Server error - Internal server error
@@ -120,20 +128,15 @@ const options = {
  * @header {string} X-RateLimit-Remaining - Number of requests remaining in current window - Example: 99
  * @header {string} X-RateLimit-Reset - Time when the rate limit window resets in UTC epoch seconds - Example: 1635724800
  * @header {string} X-RateLimit-Policy - Rate limit policy details - Example: 100 requests per 60 seconds
- * @example request - Example request payload
- * {
- *   "deviceId": "device123",
- *   "region": "BR",
- *   "language": "pt-BR",
- *   "timezone": "America/Sao_Paulo"
- * }
  * @example response - 200 - Example success response
  * {
- *   "sessionToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
- *   "userPreferences": {
- *     "language": "pt-BR",
- *     "region": "BR"
- *   }
+ *   "region": "BR",
+ *   "session_stringvalue": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+ *   "session_parametername": "HKS",
+ *   "date": "2023-11-02",
+ *   "time": "14:30:00",
+ *   "timezone": "America/Sao_Paulo",
+ *   "utc": "-03:00"
  * }
  */
 
