@@ -1,14 +1,17 @@
 const express = require('express');
-const router = express.Router();
-
-// Import route modules
 const userRoutes = require('./user.routes');
 const navRoutes = require('./nav.routes');
 const apaRoutes = require('./apa.routes');
+const { errorHandler } = require('../middleware/errorHandler');
 
-// Configure routes with their respective path prefixes
-router.use('/user', userRoutes);  // Handles /user/startheaderinfo endpoint
-router.use('/nav', navRoutes);    // Handles /nav/data endpoint
-router.use('/apa', apaRoutes);    // Handles /apa/asset and /apa/metadata endpoints
+const router = express.Router();
+
+// Mount routes
+router.use('/user', userRoutes);
+router.use('/nav', navRoutes);
+router.use('/apa', apaRoutes);
+
+// Error handling middleware
+router.use(errorHandler);
 
 module.exports = router;
