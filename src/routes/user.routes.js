@@ -84,6 +84,40 @@ const { authenticate } = require('../middleware/auth.middleware');
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *       503:
+ *         description: Database connection error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MongooseConnectionStatus'
+ * components:
+ *   schemas:
+ *     MongooseConnectionStatus:
+ *       type: object
+ *       properties:
+ *         status:
+ *           type: string
+ *           enum: [disconnected, connected, connecting, disconnecting]
+ *           description: Current status of the MongoDB connection
+ *         error:
+ *           type: string
+ *           description: Error message if connection failed
+ *         lastConnected:
+ *           type: string
+ *           format: date-time
+ *           description: Timestamp of last successful connection
+ *     CacheResponse:
+ *       type: object
+ *       properties:
+ *         cached:
+ *           type: boolean
+ *           description: Indicates if the response was served from cache
+ *         key:
+ *           type: string
+ *           description: Cache key used for the request
+ *         ttl:
+ *           type: number
+ *           description: Time-to-live in seconds for the cached response
  */
 router.post('/startheaderinfo', authenticate, userController.startHeaderInfo);
 
@@ -130,6 +164,40 @@ router.post('/startheaderinfo', authenticate, userController.startHeaderInfo);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *       503:
+ *         description: Database connection error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MongooseConnectionStatus'
+ * components:
+ *   schemas:
+ *     MongooseConnectionStatus:
+ *       type: object
+ *       properties:
+ *         status:
+ *           type: string
+ *           enum: [disconnected, connected, connecting, disconnecting]
+ *           description: Current status of the MongoDB connection
+ *         error:
+ *           type: string
+ *           description: Error message if connection failed
+ *         lastConnected:
+ *           type: string
+ *           format: date-time
+ *           description: Timestamp of last successful connection
+ *     CacheResponse:
+ *       type: object
+ *       properties:
+ *         cached:
+ *           type: boolean
+ *           description: Indicates if the response was served from cache
+ *         key:
+ *           type: string
+ *           description: Cache key used for the request
+ *         ttl:
+ *           type: number
+ *           description: Time-to-live in seconds for the cached response
  */
 router.get('/profile', authenticate, userController.getCurrentUser);
 
@@ -199,6 +267,40 @@ router.get('/profile', authenticate, userController.getCurrentUser);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *       503:
+ *         description: Database connection error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MongooseConnectionStatus'
+ * components:
+ *   schemas:
+ *     MongooseConnectionStatus:
+ *       type: object
+ *       properties:
+ *         status:
+ *           type: string
+ *           enum: [disconnected, connected, connecting, disconnecting]
+ *           description: Current status of the MongoDB connection
+ *         error:
+ *           type: string
+ *           description: Error message if connection failed
+ *         lastConnected:
+ *           type: string
+ *           format: date-time
+ *           description: Timestamp of last successful connection
+ *     CacheResponse:
+ *       type: object
+ *       properties:
+ *         cached:
+ *           type: boolean
+ *           description: Indicates if the response was served from cache
+ *         key:
+ *           type: string
+ *           description: Cache key used for the request
+ *         ttl:
+ *           type: number
+ *           description: Time-to-live in seconds for the cached response
  */
 router.put('/profile', authenticate, userController.updateProfile);
 
@@ -267,6 +369,40 @@ router.put('/profile', authenticate, userController.updateProfile);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *       503:
+ *         description: Database connection error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MongooseConnectionStatus'
+ * components:
+ *   schemas:
+ *     MongooseConnectionStatus:
+ *       type: object
+ *       properties:
+ *         status:
+ *           type: string
+ *           enum: [disconnected, connected, connecting, disconnecting]
+ *           description: Current status of the MongoDB connection
+ *         error:
+ *           type: string
+ *           description: Error message if connection failed
+ *         lastConnected:
+ *           type: string
+ *           format: date-time
+ *           description: Timestamp of last successful connection
+ *     CacheResponse:
+ *       type: object
+ *       properties:
+ *         cached:
+ *           type: boolean
+ *           description: Indicates if the response was served from cache
+ *         key:
+ *           type: string
+ *           description: Cache key used for the request
+ *         ttl:
+ *           type: number
+ *           description: Time-to-live in seconds for the cached response
  */
 router.put('/password', authenticate, userController.changePassword);
 
@@ -311,6 +447,40 @@ router.put('/password', authenticate, userController.changePassword);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *       503:
+ *         description: Database connection error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MongooseConnectionStatus'
+ * components:
+ *   schemas:
+ *     MongooseConnectionStatus:
+ *       type: object
+ *       properties:
+ *         status:
+ *           type: string
+ *           enum: [disconnected, connected, connecting, disconnecting]
+ *           description: Current status of the MongoDB connection
+ *         error:
+ *           type: string
+ *           description: Error message if connection failed
+ *         lastConnected:
+ *           type: string
+ *           format: date-time
+ *           description: Timestamp of last successful connection
+ *     CacheResponse:
+ *       type: object
+ *       properties:
+ *         cached:
+ *           type: boolean
+ *           description: Indicates if the response was served from cache
+ *         key:
+ *           type: string
+ *           description: Cache key used for the request
+ *         ttl:
+ *           type: number
+ *           description: Time-to-live in seconds for the cached response
  */
 router.post('/logout', authenticate, userController.logoutUser);
 
