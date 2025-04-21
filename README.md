@@ -123,9 +123,9 @@ Provides geolocation/region and session values for the user.
 
 **Endpoint:** GET /user/startheaderinfo
 
-**Authentication Parameters:**
-- authpn: Authentication parameter name
-- authpt: Authentication parameter token
+**Query Parameters:**
+- authpn: Vendor Authentication User (required, value: 'tataelxsi')
+- authpt: Encrypted vendor authentication key (required, value: 'vofee7ohhecai')
 
 **Response Schema:**
 ```json

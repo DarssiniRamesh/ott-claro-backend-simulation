@@ -203,19 +203,22 @@ paths:
   /user/startheaderinfo:
     get:
       summary: Get user session and geolocation information
+      description: Retrieves user's region, session information, and timezone details
       parameters:
-        - name: authpt
-          in: query
-          required: true
-          description: Encrypted vendor authentication key. Value is 'vofee7ohhecai'
-          schema:
-            type: string
         - name: authpn
           in: query
           required: true
-          description: Vendor Authentication User. Value is 'tataelxsi'
+          description: Vendor Authentication User. Value must be 'tataelxsi'
           schema:
             type: string
+            example: tataelxsi
+        - name: authpt
+          in: query
+          required: true
+          description: Encrypted vendor authentication key. Value must be 'vofee7ohhecai'
+          schema:
+            type: string
+            example: vofee7ohhecai
       responses:
         '200':
           description: Successful response
