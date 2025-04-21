@@ -33,6 +33,29 @@ const options = {
 };
 
 /**
+ * @typedef {object} MongooseConnectionStatus
+ * @property {string} state.required - Current connection state - Enum: [connected, connecting, disconnected, disconnecting] - Example: connected
+ * @property {string} database.required - Database name - Example: ott_claro_simulation
+ * @property {string} host.required - Database host - Example: localhost:27017
+ * @property {number} readyState.required - Mongoose connection ready state (0-3) - Minimum: 0 - Maximum: 3 - Example: 1
+ * @property {object} [error] - Connection error details if any
+ * @property {string} [error.message] - Error message - Example: Connection timeout
+ * @property {string} [error.code] - Error code - Example: ETIMEDOUT
+ */
+
+/**
+ * @typedef {object} CacheKeyResponse
+ * @property {string} key.required - Cache key identifier - Example: nav:BR:pt-BR
+ * @property {boolean} exists.required - Whether the key exists in cache - Example: true
+ * @property {string} status.required - Cache entry status - Enum: [valid, expired, missing] - Example: valid
+ * @property {number} [ttl] - Time to live in seconds - Minimum: 0 - Example: 3600
+ * @property {string} [lastUpdated] - ISO timestamp of last update - Example: 2023-11-01T10:00:00Z
+ * @property {object} [metadata] - Additional cache entry metadata
+ * @property {string} [metadata.type] - Type of cached content - Example: navigation
+ * @property {string} [metadata.region] - Region associated with cache - Example: BR
+ */
+
+/**
  * @typedef {object} ErrorResponse
  * @property {string} message.required - Error message - Example: Invalid request parameters
  * @property {string} code.required - Error code - Example: VALIDATION_ERROR
