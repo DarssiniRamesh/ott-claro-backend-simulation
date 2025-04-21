@@ -5,8 +5,8 @@ info:
   description: Mock API server for Video OTT Platform providing authentication, content management, and streaming services
 
 servers:
-  - url: /api/v1
-    description: API base path
+  - url: https://api.videoott.com/v1
+    description: Production server
 
 components:
   securitySchemes:
@@ -14,6 +14,10 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+    authpt:
+      type: apiKey
+      in: header
+      name: X-Auth-Key
 
   schemas:
     Error:
@@ -203,49 +207,6 @@ components:
               type: number
               format: float
 
-  parameters:
-    DeviceIdHeader:
-      in: header
-      name: X-Device-Id
-      required: true
-      schema:
-        type: string
-      description: Unique device identifier
-    RegionHeader:
-      in: header
-      name: X-Region
-      required: true
-      schema:
-        type: string
-      description: User's geographic region
-
-  responses:
-    UnauthorizedError:
-      description: Unauthorized - Invalid or missing authentication
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    RateLimitError:
-      description: Too many requests
-      headers:
-        X-RateLimit-Limit:
-          schema:
-            type: integer
-          description: Number of allowed requests in the current period
-        X-RateLimit-Remaining:
-          schema:
-            type: integer
-          description: Number of remaining requests in the current period
-        X-RateLimit-Reset:
-          schema:
-            type: integer
-          description: The remaining window before the rate limit resets in seconds
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-
 paths:
   /user/startheaderinfo:
     post:
@@ -253,9 +214,7 @@ paths:
       description: Creates a new user session and returns user profile information based on device and region details
       security:
         - bearerAuth: []
-      parameters:
-        - $ref: '#/components/parameters/DeviceIdHeader'
-        - $ref: '#/components/parameters/RegionHeader'
+        - authpt: []
       requestBody:
         required: true
         content:
@@ -276,9 +235,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '429':
-          $ref: '#/components/responses/RateLimitError'
+          description: Unauthorized - Invalid or missing authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /nav/data:
     get:
@@ -286,9 +247,7 @@ paths:
       description: Returns the complete navigation menu structure including categories and subcategories
       security:
         - bearerAuth: []
-      parameters:
-        - $ref: '#/components/parameters/DeviceIdHeader'
-        - $ref: '#/components/parameters/RegionHeader'
+        - authpt: []
       responses:
         '200':
           description: Navigation structure retrieved successfully
@@ -297,9 +256,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/NavigationResponse'
         '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '429':
-          $ref: '#/components/responses/RateLimitError'
+          description: Unauthorized - Invalid or missing authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /apa/asset:
     get:
@@ -307,15 +268,20 @@ paths:
       description: Retrieves streaming configuration for a specific asset based on device capabilities
       security:
         - bearerAuth: []
+        - authpt: []
       parameters:
-        - $ref: '#/components/parameters/DeviceIdHeader'
-        - $ref: '#/components/parameters/RegionHeader'
         - name: id
           in: query
           required: true
           schema:
             type: string
           description: Asset identifier
+        - name: deviceId
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Device identifier
         - name: resolution
           in: query
           required: false
@@ -342,9 +308,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '429':
-          $ref: '#/components/responses/RateLimitError'
+          description: Unauthorized - Invalid or missing authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /apa/metadata:
     get:
@@ -352,9 +320,8 @@ paths:
       description: Returns detailed metadata information for a specific content asset
       security:
         - bearerAuth: []
+        - authpt: []
       parameters:
-        - $ref: '#/components/parameters/DeviceIdHeader'
-        - $ref: '#/components/parameters/RegionHeader'
         - name: id
           in: query
           required: true
@@ -382,6 +349,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '429':
-          $ref: '#/components/responses/RateLimitError'
+          description: Unauthorized - Invalid or missing authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
