@@ -1,18 +1,44 @@
 'use strict';
 
 const winston = require('winston');
+const { createLogger, format, transports } = winston;
+const { combine, timestamp, printf, json } = format;
+
+// Custom format for development logs
+const devLogFormat = printf(({ level, message, timestamp, ...metadata }) => {
+  return `${timestamp} ${level}: ${message} ${Object.keys(metadata).length ? JSON.stringify(metadata, null, 2) : ''}`;
+});
 
 // Configure winston logger
-const logger = winston.createLogger({
-  level: 'error',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json()
+const logger = createLogger({
+  level: process.env.LOG_LEVEL || 'error',
+  format: combine(
+    timestamp(),
+    process.env.NODE_ENV === 'development' ? devLogFormat : json()
   ),
   transports: [
-    new winston.transports.File({ filename: 'logs/error.log' })
-  ]
+    // Rotating file transport for errors
+    new transports.File({
+      filename: 'logs/error.log',
+      maxsize: 5242880, // 5MB
+      maxFiles: 5,
+      tailable: true,
+      handleExceptions: true,
+      handleRejections: true
+    })
+  ],
+  exitOnError: false // Don't crash on exception
 });
+
+// Add console transport in development
+if (process.env.NODE_ENV === 'development') {
+  logger.add(new transports.Console({
+    format: combine(
+      format.colorize(),
+      devLogFormat
+    )
+  }));
+}
 
 /**
  * Base error class for custom errors
