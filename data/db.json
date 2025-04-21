@@ -1,0 +1,82 @@
+{
+  "users": [
+    {
+      "sessionId": "sample-session-id",
+      "deviceInfo": {
+        "type": "smart-tv",
+        "model": "samsung-tv-2023",
+        "os": "tizen"
+      },
+      "region": {
+        "country": "BR",
+        "timezone": "America/Sao_Paulo"
+      },
+      "createdAt": "2023-01-01T00:00:00Z"
+    }
+  ],
+  "navigation": {
+    "sections": [
+      {
+        "id": "home",
+        "name": "Home",
+        "order": 1,
+        "categories": ["featured", "trending"]
+      },
+      {
+        "id": "movies",
+        "name": "Movies",
+        "order": 2,
+        "categories": ["action", "drama", "comedy"]
+      }
+    ],
+    "categories": [
+      {
+        "id": "featured",
+        "name": "Featured",
+        "type": "highlight"
+      },
+      {
+        "id": "trending",
+        "name": "Trending Now",
+        "type": "carousel"
+      }
+    ]
+  },
+  "assets": [
+    {
+      "id": "default",
+      "deviceType": "smart-tv",
+      "configurations": {
+        "player": {
+          "type": "hls",
+          "maxBitrate": 6000000,
+          "bufferSize": 30
+        },
+        "drm": {
+          "type": "widevine",
+          "required": true
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "configurations": [
+      {
+        "id": "video-quality",
+        "name": "Video Quality Settings",
+        "options": ["auto", "high", "medium", "low"]
+      }
+    ],
+    "parameters": [
+      {
+        "id": "content-filters",
+        "type": "object",
+        "properties": {
+          "parentalRating": "string",
+          "contentType": "array",
+          "language": "string"
+        }
+      }
+    ]
+  }
+}
