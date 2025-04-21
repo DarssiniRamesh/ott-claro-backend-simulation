@@ -1,4 +1,6 @@
-import winston from 'winston';
+'use strict';
+
+const winston = require('winston');
 
 // Configure winston logger
 const logger = winston.createLogger({
@@ -12,7 +14,11 @@ const logger = winston.createLogger({
   ]
 });
 
-// Base error class for custom errors
+/**
+ * Base error class for custom errors
+ * @class BaseError
+ * @extends Error
+ */
 class BaseError extends Error {
   constructor(message, statusCode, isOperational = true) {
     super(message);
@@ -23,35 +29,55 @@ class BaseError extends Error {
   }
 }
 
-// 404 Not Found Error
+/**
+ * 404 Not Found Error
+ * @class NotFoundError
+ * @extends BaseError
+ */
 class NotFoundError extends BaseError {
   constructor(message = 'Resource not found') {
     super(message, 404);
   }
 }
 
-// 400 Validation Error
+/**
+ * 400 Validation Error
+ * @class ValidationError
+ * @extends BaseError
+ */
 class ValidationError extends BaseError {
   constructor(message = 'Validation failed') {
     super(message, 400);
   }
 }
 
-// 401 Authentication Error
+/**
+ * 401 Authentication Error
+ * @class AuthenticationError
+ * @extends BaseError
+ */
 class AuthenticationError extends BaseError {
   constructor(message = 'Authentication failed') {
     super(message, 401);
   }
 }
 
-// 403 Authorization Error
+/**
+ * 403 Authorization Error
+ * @class AuthorizationError
+ * @extends BaseError
+ */
 class AuthorizationError extends BaseError {
   constructor(message = 'Not authorized') {
     super(message, 403);
   }
 }
 
-// 500 Database Error
+/**
+ * 500 Database Error
+ * @class DatabaseError
+ * @extends BaseError
+ */
 class DatabaseError extends BaseError {
   constructor(message = 'Database operation failed') {
     super(message, 500, true);
@@ -63,7 +89,7 @@ class DatabaseError extends BaseError {
  * @param {Error} err - MongoDB error
  * @returns {BaseError} Mapped custom error
  */
-const handleMongoError = (err) => {
+function handleMongoError(err) {
   if (err.name === 'ValidationError') {
     return new ValidationError(err.message);
   }
@@ -74,14 +100,14 @@ const handleMongoError = (err) => {
     return new ValidationError('Duplicate key error');
   }
   return new DatabaseError(err.message);
-};
+}
 
 /**
  * Map JWT errors to custom error classes
  * @param {Error} err - JWT error
  * @returns {BaseError} Mapped custom error
  */
-const handleJWTError = (err) => {
+function handleJWTError(err) {
   if (err.name === 'JsonWebTokenError') {
     return new AuthenticationError('Invalid token');
   }
@@ -89,24 +115,30 @@ const handleJWTError = (err) => {
     return new AuthenticationError('Token expired');
   }
   return new AuthenticationError(err.message);
-};
+}
 
 /**
  * Format error response
  * @param {BaseError} err - Error object
  * @returns {Object} Formatted error response
  */
-const formatError = (err) => ({
-  status: 'error',
-  code: err.statusCode || 500,
-  message: err.message,
-  ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
-});
+function formatError(err) {
+  return {
+    status: 'error',
+    code: err.statusCode || 500,
+    message: err.message,
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+  };
+}
 
 /**
  * Global error handling middleware
+ * @param {Error} err - Error object
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next function
  */
-const errorHandler = (err, req, res, next) => {
+function errorHandler(err, req, res, next) {
   let error = err;
 
   // Log error
@@ -137,9 +169,10 @@ const errorHandler = (err, req, res, next) => {
 
   // Send error response
   res.status(error.statusCode).json(formatError(error));
-};
+}
 
-export {
+// Export all error classes and the error handler
+module.exports = {
   BaseError,
   NotFoundError,
   ValidationError,
