@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: Video OTT Platform API
   version: 1.0.0
-  description: Mock API server for Video OTT Platform providing authentication, content management, and streaming services
+  description: API server for Video OTT Platform providing authentication, content management, and streaming services
 
 servers:
   - url: https://api.videoott.com/v1
