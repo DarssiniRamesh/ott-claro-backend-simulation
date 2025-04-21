@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const navController = require('../controllers/navController');
+const validateNavData = require('../middleware/validateNavData');
 
 /**
  * @swagger
@@ -22,6 +23,6 @@ const navController = require('../controllers/navController');
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.get('/data', navController.getNavData);
+router.get('/data', validateNavData, navController.getNavData);
 
 module.exports = router;
