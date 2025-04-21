@@ -1,0 +1,239 @@
+openapi: 3.0.0
+info:
+  title: OTT Claro Backend API
+  version: 1.0.0
+  description: API for OTT Claro Backend Services
+
+servers:
+  - url: /api/v1
+    description: API base path
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Error code
+        message:
+          type: string
+          description: Error message
+        details:
+          type: object
+          description: Additional error details
+
+    UserStartHeaderInfo:
+      type: object
+      properties:
+        deviceId:
+          type: string
+          description: Unique device identifier
+        region:
+          type: string
+          description: User's region code
+        deviceType:
+          type: string
+          enum: [mobile, tablet, tv, web]
+        osVersion:
+          type: string
+          description: Operating system version
+
+    NavigationData:
+      type: object
+      properties:
+        structure:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              title:
+                type: string
+              type:
+                type: string
+              children:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NavigationData'
+
+    AssetConfig:
+      type: object
+      properties:
+        assetId:
+          type: string
+        format:
+          type: string
+        quality:
+          type: string
+        drm:
+          type: object
+          properties:
+            type:
+              type: string
+            config:
+              type: object
+
+    MetadataConfig:
+      type: object
+      properties:
+        contentId:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        duration:
+          type: integer
+        tags:
+          type: array
+          items:
+            type: string
+
+  parameters:
+    DeviceIdHeader:
+      in: header
+      name: X-Device-Id
+      required: true
+      schema:
+        type: string
+    RegionHeader:
+      in: header
+      name: X-Region
+      required: true
+      schema:
+        type: string
+
+  responses:
+    UnauthorizedError:
+      description: Authentication information is missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    RateLimitError:
+      description: Too many requests
+      headers:
+        X-RateLimit-Limit:
+          schema:
+            type: integer
+          description: Number of allowed requests in the current period
+        X-RateLimit-Remaining:
+          schema:
+            type: integer
+          description: Number of remaining requests in the current period
+        X-RateLimit-Reset:
+          schema:
+            type: integer
+          description: The remaining window before the rate limit resets in seconds
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+paths:
+  /user/startheaderinfo:
+    post:
+      summary: Initialize user session with device and region information
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DeviceIdHeader'
+        - $ref: '#/components/parameters/RegionHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserStartHeaderInfo'
+      responses:
+        '200':
+          description: Session initialized successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sessionId:
+                    type: string
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '429':
+          $ref: '#/components/responses/RateLimitError'
+
+  /nav/data:
+    get:
+      summary: Retrieve hierarchical navigation structure
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DeviceIdHeader'
+        - $ref: '#/components/parameters/RegionHeader'
+      responses:
+        '200':
+          description: Navigation data retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NavigationData'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '429':
+          $ref: '#/components/responses/RateLimitError'
+
+  /apa/asset:
+    get:
+      summary: Get device-specific asset configurations
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DeviceIdHeader'
+        - $ref: '#/components/parameters/RegionHeader'
+        - in: query
+          name: assetId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Asset configuration retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetConfig'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '429':
+          $ref: '#/components/responses/RateLimitError'
+
+  /apa/metadata:
+    get:
+      summary: Retrieve content metadata and parameters
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DeviceIdHeader'
+        - $ref: '#/components/parameters/RegionHeader'
+        - in: query
+          name: contentId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Metadata configuration retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataConfig'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '429':
+          $ref: '#/components/responses/RateLimitError'
