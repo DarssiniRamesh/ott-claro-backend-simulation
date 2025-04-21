@@ -1,141 +1,241 @@
 openapi: 3.0.0
 info:
-  title: OTT Claro Backend API
-  description: |
-    API specification for OTT Claro Backend Simulation providing user session management,
-    navigation structure, asset configuration, and metadata services.
+  title: Video OTT Platform API
   version: 1.0.0
+  description: Mock API server for Video OTT Platform providing authentication, content management, and streaming services
 
 servers:
-  - url: /api/v1
-    description: Base API path
+  - url: https://api.videoott.com/v1
+    description: Production server
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    authpt:
+      type: apiKey
+      in: header
+      name: X-Auth-Key
+
   schemas:
     Error:
       type: object
       properties:
-        code:
-          type: integer
-          format: int32
+        status:
+          type: string
+          enum: [error]
         message:
           type: string
-    StartHeaderInfo:
+          description: Error message description
+        code:
+          type: string
+          description: Optional error code for specific error types
+
+    DeviceAuthInfo:
       type: object
       required:
         - deviceId
         - region
+        - platform
+        - appVersion
       properties:
         deviceId:
           type: string
-          description: Unique identifier for the device
+          description: Unique device identifier
         region:
           type: string
-          description: User's region code
-        deviceType:
+          description: User's geographic region
+        platform:
           type: string
-          description: Type of device (mobile, tablet, smart-tv, etc.)
-        osVersion:
+          description: Device platform (e.g., iOS, Android, Web)
+        appVersion:
           type: string
-          description: Operating system version
-    StartHeaderResponse:
+          description: Application version number
+
+    SessionInfo:
       type: object
       properties:
-        sessionId:
+        userId:
           type: string
-          description: Unique session identifier
-        timestamp:
+          description: Unique user identifier
+        displayName:
           type: string
-          format: date-time
+          description: User's display name
+        avatar:
+          type: string
+          format: uri
+          description: URL to user's avatar image
+        notifications:
+          type: integer
+          description: Number of unread notifications
+
+    NavigationResponse:
+      type: object
+      properties:
         status:
           type: string
-          enum: [active, expired]
-    NavigationData:
-      type: object
-      properties:
-        structure:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-              name:
-                type: string
-              type:
-                type: string
-              children:
-                type: array
-                items:
-                  $ref: '#/components/schemas/NavigationData'
+          enum: [success]
+        data:
+          type: object
+          properties:
+            navigation:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  title:
+                    type: string
+                  path:
+                    type: string
+                  icon:
+                    type: string
+                  children:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        title:
+                          type: string
+                        path:
+                          type: string
+                        icon:
+                          type: string
+
     AssetConfig:
       type: object
       properties:
-        formats:
-          type: array
-          items:
-            type: object
-            properties:
-              type:
-                type: string
-              quality:
-                type: string
-              codec:
-                type: string
-        drm:
+        status:
+          type: string
+          enum: [success]
+        data:
           type: object
           properties:
-            enabled:
-              type: boolean
-            provider:
+            id:
               type: string
+            title:
+              type: string
+            type:
+              type: string
+            duration:
+              type: integer
+            streamUrl:
+              type: string
+              format: uri
+            thumbnailUrl:
+              type: string
+              format: uri
+            availableUntil:
+              type: string
+              format: date-time
+            isHD:
+              type: boolean
+            hasSubtitles:
+              type: boolean
+            supportedFormats:
+              type: array
+              items:
+                type: string
+            supportedResolutions:
+              type: array
+              items:
+                type: string
+            drm:
+              type: object
+              properties:
+                provider:
+                  type: string
+                token:
+                  type: string
+
     MetadataConfig:
       type: object
       properties:
-        fields:
-          type: array
-          items:
-            type: string
-        language:
+        status:
           type: string
-        format:
-          type: string
-
-  securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
-
-security:
-  - BearerAuth: []
+          enum: [success]
+        data:
+          type: object
+          properties:
+            assetId:
+              type: string
+            title:
+              type: string
+            description:
+              type: string
+            releaseYear:
+              type: integer
+            genres:
+              type: array
+              items:
+                type: string
+            cast:
+              type: array
+              items:
+                type: string
+            director:
+              type: string
+            rating:
+              type: string
+            language:
+              type: string
+            subtitles:
+              type: array
+              items:
+                type: string
+            runtime:
+              type: string
+            posterUrl:
+              type: string
+              format: uri
+            trailerUrl:
+              type: string
+              format: uri
+            tags:
+              type: array
+              items:
+                type: string
+            popularity:
+              type: number
+              format: float
+            averageRating:
+              type: number
+              format: float
 
 paths:
   /user/startheaderinfo:
     post:
-      summary: Initialize user session
-      description: Initialize user session with device and region information
-      operationId: startHeaderInfo
+      summary: Initialize user session with device and region information
+      description: Creates a new user session and returns user profile information based on device and region details
+      security:
+        - bearerAuth: []
+        - authpt: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/StartHeaderInfo'
+              $ref: '#/components/schemas/DeviceAuthInfo'
       responses:
         '200':
-          description: Session successfully initialized
+          description: Session initialized successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StartHeaderResponse'
+                $ref: '#/components/schemas/SessionInfo'
         '400':
           description: Invalid request parameters
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
+        '401':
+          description: Unauthorized - Invalid or missing authentication
           content:
             application/json:
               schema:
@@ -143,30 +243,20 @@ paths:
 
   /nav/data:
     get:
-      summary: Get navigation structure
-      description: Retrieve hierarchical navigation structure
-      operationId: getNavigationData
-      parameters:
-        - name: language
-          in: query
-          schema:
-            type: string
-          description: Preferred language for navigation labels
+      summary: Retrieve hierarchical navigation structure
+      description: Returns the complete navigation menu structure including categories and subcategories
+      security:
+        - bearerAuth: []
+        - authpt: []
       responses:
         '200':
           description: Navigation structure retrieved successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NavigationData'
+                $ref: '#/components/schemas/NavigationResponse'
         '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
+          description: Unauthorized - Invalid or missing authentication
           content:
             application/json:
               schema:
@@ -174,22 +264,36 @@ paths:
 
   /apa/asset:
     get:
-      summary: Get asset configuration
-      description: Get device-specific asset configurations
-      operationId: getAssetConfig
+      summary: Get device-specific asset configurations
+      description: Retrieves streaming configuration for a specific asset based on device capabilities
+      security:
+        - bearerAuth: []
+        - authpt: []
       parameters:
-        - name: deviceType
+        - name: id
           in: query
           required: true
           schema:
             type: string
-          description: Type of device requesting asset configuration
-        - name: assetId
+          description: Asset identifier
+        - name: deviceId
           in: query
           required: true
           schema:
             type: string
-          description: Unique identifier of the asset
+          description: Device identifier
+        - name: resolution
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Preferred resolution
+        - name: format
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Preferred streaming format
       responses:
         '200':
           description: Asset configuration retrieved successfully
@@ -198,19 +302,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/AssetConfig'
         '400':
-          description: Invalid request parameters
+          description: Missing required parameters
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
+          description: Unauthorized - Invalid or missing authentication
           content:
             application/json:
               schema:
@@ -218,42 +316,40 @@ paths:
 
   /apa/metadata:
     get:
-      summary: Get metadata configuration
-      description: Retrieve content metadata and parameters
-      operationId: getMetadataConfig
+      summary: Retrieve content metadata and parameters
+      description: Returns detailed metadata information for a specific content asset
+      security:
+        - bearerAuth: []
+        - authpt: []
       parameters:
-        - name: contentType
+        - name: id
           in: query
           required: true
           schema:
             type: string
-          description: Type of content (movie, series, episode, etc.)
+          description: Asset identifier
         - name: language
           in: query
+          required: false
           schema:
             type: string
+          default: en
           description: Preferred language for metadata
       responses:
         '200':
-          description: Metadata configuration retrieved successfully
+          description: Metadata retrieved successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/MetadataConfig'
         '400':
-          description: Invalid request parameters
+          description: Missing required parameters
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          description: Internal server error
+          description: Unauthorized - Invalid or missing authentication
           content:
             application/json:
               schema:
