@@ -1,6 +1,7 @@
 import request from 'supertest';
 import app from '../server';
 import mongoose from 'mongoose';
+import type { UserSessionRequest } from '../types/api.types';
 
 describe('API Endpoints Tests', () => {
   beforeAll(async () => {
