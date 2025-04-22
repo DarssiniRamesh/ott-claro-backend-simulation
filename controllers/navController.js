@@ -9,22 +9,48 @@ const navService = require('../services/navService');
  */
 const getNavData = async (req, res, next) => {
   try {
-    const navData = await navService.getNavigationData(req.navParams);
+    const { nodes } = await navService.getNavigationData(req.navParams);
     
     // Return successful response with standardized format
-    res.status(200).json({
-      entry: navData || {},  // Ensure entry is always an object
-      response: {},         // Empty response object as per schema
-      status: 0,           // 0 indicates success
-      msg: 'OK'            // Standard success message
+    const response = {
+      entry: {
+        authpn: String(req.navParams.authpn || 'tataelxsi'),
+        authpt: String(req.navParams.authpt || 'vofee7ohhecai'),
+        device_category: String(req.navParams.device_category || 'stb'),
+        device_type: String(req.navParams.device_type || 'ptv'),
+        device_model: String(req.navParams.device_model || 'androidTV'),
+        device_manufacturer: String(req.navParams.device_manufacturer || 'ZTE'),
+        HKS: String(req.navParams.HKS || 'sample-session-key'),
+        api_version: String(req.navParams.api_version || 'v5.93'),
+        region: String(req.navParams.region || 'sample-region'),
+        device_id: String(req.navParams.device_id || 'sample-device-id')
+      },
+      response: { 
+        nodes: Array.isArray(nodes) ? nodes : [] // Ensure nodes is always an array
+      },
+      status: 0, // Integer status code for success
+      msg: String('OK')
     });
   } catch (error) {
     // Pass error to error handler with standardized format
-    next({
-      entry: {},
-      response: {},
-      status: 1,           // 1 indicates error
-      msg: error.message || 'ERROR'
+    const errorResponse = {
+      entry: {
+        authpn: String(req.navParams?.authpn || 'tataelxsi'),
+        authpt: String(req.navParams?.authpt || 'vofee7ohhecai'),
+        device_category: String(req.navParams?.device_category || 'stb'),
+        device_type: String(req.navParams?.device_type || 'ptv'),
+        device_model: String(req.navParams?.device_model || 'androidTV'),
+        device_manufacturer: String(req.navParams?.device_manufacturer || 'ZTE'),
+        HKS: String(req.navParams?.HKS || 'sample-session-key'),
+        api_version: String(req.navParams?.api_version || 'v5.93'),
+        region: String(req.navParams?.region || 'sample-region'),
+        device_id: String(req.navParams?.device_id || 'sample-device-id')
+      },
+      response: { 
+        nodes: [] // Empty array for error case
+      },
+      status: 1, // Integer status code for error
+      msg: String(error.message || 'ERROR')
     });
   }
 };
