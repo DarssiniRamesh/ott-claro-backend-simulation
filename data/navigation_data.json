@@ -1,0 +1,223 @@
+{
+  "navigation": [
+    {
+      "id": "home",
+      "title": "Home",
+      "type": "section",
+      "order": 1,
+      "icon": "home",
+      "visible": true,
+      "children": [
+        {
+          "id": "featured",
+          "title": "Featured",
+          "type": "item",
+          "url": "/featured",
+          "icon": "star",
+          "order": 1,
+          "visible": true
+        },
+        {
+          "id": "continue-watching",
+          "title": "Continue Watching",
+          "type": "item",
+          "url": "/continue-watching",
+          "icon": "play-circle",
+          "order": 2,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "id": "movies",
+      "title": "Movies",
+      "type": "section",
+      "order": 2,
+      "icon": "film",
+      "visible": true,
+      "children": [
+        {
+          "id": "action-movies",
+          "title": "Action",
+          "type": "item",
+          "url": "/movies/action",
+          "order": 1,
+          "visible": true
+        },
+        {
+          "id": "comedy-movies",
+          "title": "Comedy",
+          "type": "item",
+          "url": "/movies/comedy",
+          "order": 2,
+          "visible": true
+        },
+        {
+          "id": "drama-movies",
+          "title": "Drama",
+          "type": "item",
+          "url": "/movies/drama",
+          "order": 3,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "id": "series",
+      "title": "Series",
+      "type": "section",
+      "order": 3,
+      "icon": "tv",
+      "visible": true,
+      "children": [
+        {
+          "id": "trending-series",
+          "title": "Trending",
+          "type": "item",
+          "url": "/series/trending",
+          "order": 1,
+          "visible": true
+        },
+        {
+          "id": "new-episodes",
+          "title": "New Episodes",
+          "type": "item",
+          "url": "/series/new-episodes",
+          "order": 2,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "id": "sports",
+      "title": "Sports",
+      "type": "section",
+      "order": 4,
+      "icon": "trophy",
+      "visible": true,
+      "children": [
+        {
+          "id": "football",
+          "title": "Football",
+          "type": "item",
+          "url": "/sports/football",
+          "order": 1,
+          "visible": true
+        },
+        {
+          "id": "basketball",
+          "title": "Basketball",
+          "type": "item",
+          "url": "/sports/basketball",
+          "order": 2,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "id": "kids",
+      "title": "Kids",
+      "type": "section",
+      "order": 5,
+      "icon": "smile",
+      "visible": true,
+      "children": [
+        {
+          "id": "animation",
+          "title": "Animation",
+          "type": "item",
+          "url": "/kids/animation",
+          "order": 1,
+          "visible": true
+        },
+        {
+          "id": "educational",
+          "title": "Educational",
+          "type": "item",
+          "url": "/kids/educational",
+          "order": 2,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "id": "documentaries",
+      "title": "Documentaries",
+      "type": "section",
+      "order": 6,
+      "icon": "compass",
+      "visible": true,
+      "children": [
+        {
+          "id": "nature",
+          "title": "Nature",
+          "type": "item",
+          "url": "/documentaries/nature",
+          "order": 1,
+          "visible": true
+        },
+        {
+          "id": "science",
+          "title": "Science",
+          "type": "item",
+          "url": "/documentaries/science",
+          "order": 2,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "id": "my-list",
+      "title": "My List",
+      "type": "section",
+      "order": 7,
+      "icon": "heart",
+      "visible": true,
+      "url": "/my-list"
+    },
+    {
+      "id": "downloads",
+      "title": "Downloads",
+      "type": "section",
+      "order": 8,
+      "icon": "download",
+      "visible": true,
+      "url": "/downloads"
+    },
+    {
+      "id": "settings",
+      "title": "Settings",
+      "type": "section",
+      "order": 9,
+      "icon": "settings",
+      "visible": true,
+      "children": [
+        {
+          "id": "account",
+          "title": "Account",
+          "type": "item",
+          "url": "/settings/account",
+          "order": 1,
+          "visible": true
+        },
+        {
+          "id": "preferences",
+          "title": "Preferences",
+          "type": "item",
+          "url": "/settings/preferences",
+          "order": 2,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "id": "help",
+      "title": "Help",
+      "type": "section",
+      "order": 10,
+      "icon": "help-circle",
+      "visible": true,
+      "url": "/help"
+    }
+  ]
+}

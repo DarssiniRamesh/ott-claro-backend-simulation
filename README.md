@@ -164,9 +164,131 @@ The API Core Component is a robust backend simulation service designed to suppor
 3. Configure environment variables in `.env`
 4. Start the development server with `npm run dev`
 
-### Testing
+## Testing Instructions
 
-To implement tests, follow these steps:
+### Prerequisites
+
+1. Node.js (v12 or higher)
+2. npm (Node Package Manager)
+3. A REST API client (e.g., Postman, cURL, or any HTTP client)
+4. Access to the development environment
+
+### Environment Setup
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Start the server:
+   ```bash
+   npm start
+   ```
+   The server will start on port 3000 by default (or the port specified in your .env file)
+
+### Testing the /apa/metadata Endpoint
+
+#### Endpoint Details
+- **Method:** GET
+- **URL:** `http://localhost:3000/apa/metadata`
+- **Purpose:** Retrieve content metadata and parameters for device configuration
+
+#### Required Query Parameters
+
+All parameters are mandatory and some have specific fixed values:
+
+| Parameter | Required | Fixed Value | Description |
+|-----------|----------|-------------|-------------|
+| authpn | Yes | tataelxsi | Authentication parameter name |
+| authpt | Yes | vofee7ohhecai | Authentication parameter token |
+| device_category | Yes | stb | Device category |
+| device_type | Yes | - | Device type (e.g., ptv, ott) |
+| device_model | Yes | androidTV | Device model |
+| device_manufacturer | Yes | ZTE | Device manufacturer |
+| api_version | Yes | v5.93 | API version |
+| region | Yes | - | User region |
+| user_id | Yes | - | User ID (must be an integer) |
+| sessionKey | Yes | - | Session key |
+
+#### Example Request
+
+```bash
+curl -X GET 'http://localhost:3000/apa/metadata?authpn=tataelxsi&authpt=vofee7ohhecai&device_category=stb&device_type=ott&device_model=androidTV&device_manufacturer=ZTE&api_version=v5.93&region=US&user_id=12345&sessionKey=abc123'
+```
+
+#### Example Response
+
+```json
+{
+  "translations": {},
+  "sprites_configuration": {},
+  "atv_hide_pack_logo": false,
+  "third_party_epg_apps": [],
+  "logs_dashboard_url": "https://logs.example.com",
+  "lms_bootstrap_url": "https://lms.example.com",
+  "byr_filterlist_configuration": {},
+  "time_to_get_favs": 300000,
+  "sentinel_reminders_interval": 60000,
+  "pin_use_channel_rating_flow": true,
+  "time_to_get_recordings": 300000,
+  "onboarding": {},
+  "interval_time_check_epg_version": 3600000,
+  "interval_time_check_lineal_channels": 300000,
+  "fast_forward_rewind_option": {},
+  "supported_stream": ["HLS", "DASH"],
+  "isloggedin_refresh_hours_time": 24,
+  "atv_max_buffer_ms": 30000,
+  "atv_min_buffer_ms": 15000,
+  "atv_rebuffer_ms": 5000,
+  "atv_start_buffer_ms": 10000,
+  "myaccount_configuration": {},
+  "fallback_interval_time": 60000
+}
+```
+
+#### Response Status Codes
+
+- **200:** Successful request
+- **400:** Validation error (missing or invalid parameters)
+- **401:** Authentication failed
+- **500:** Server error
+
+#### Troubleshooting Guide
+
+1. **400 Bad Request**
+   - Verify all required parameters are included
+   - Check that fixed values match exactly (case-sensitive)
+   - Ensure user_id is a valid integer
+   - Verify parameter names are spelled correctly
+
+2. **401 Unauthorized**
+   - Verify authpn and authpt values are correct
+   - Check if sessionKey is valid
+
+3. **500 Server Error**
+   - Verify the server is running
+   - Check server logs for detailed error information
+   - Ensure database connection is working
+
+#### Common Issues and Solutions
+
+1. **Parameter Validation Errors**
+   - **Issue:** "authpn is required" or similar messages
+   - **Solution:** Ensure all required parameters are included in the request
+
+2. **Invalid Fixed Values**
+   - **Issue:** "Invalid device_category. Expected: stb"
+   - **Solution:** Use exact fixed values as specified in the parameters table
+
+3. **User ID Format**
+   - **Issue:** "user_id must be an integer"
+   - **Solution:** Ensure user_id is a valid number without decimals
+
+4. **Connection Issues**
+   - **Issue:** Cannot connect to server
+   - **Solution:** Verify server is running and port is correct
+
+### Running Automated Tests
 
 1. Create test files in a `tests/` directory
 2. Run tests using:

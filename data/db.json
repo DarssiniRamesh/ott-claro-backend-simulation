@@ -1,81 +1,107 @@
 {
-  "users": [
-    {
-      "sessionId": "sample-session-id",
-      "deviceInfo": {
-        "type": "smart-tv",
-        "model": "samsung-tv-2023",
-        "os": "tizen"
-      },
-      "region": {
-        "country": "BR",
-        "timezone": "America/Sao_Paulo"
-      },
-      "createdAt": "2023-01-01T00:00:00Z"
-    }
-  ],
   "navigation": {
-    "sections": [
+    "nodes": [
       {
-        "id": "home",
-        "name": "Home",
-        "order": 1,
-        "categories": ["featured", "trending"]
-      },
-      {
-        "id": "movies",
-        "name": "Movies",
-        "order": 2,
-        "categories": ["action", "drama", "comedy"]
-      }
-    ],
-    "categories": [
-      {
-        "id": "featured",
-        "name": "Featured",
-        "type": "highlight"
-      },
-      {
-        "id": "trending",
-        "name": "Trending Now",
-        "type": "carousel"
-      }
-    ]
-  },
-  "assets": [
-    {
-      "id": "default",
-      "deviceType": "smart-tv",
-      "configurations": {
-        "player": {
-          "type": "hls",
-          "maxBitrate": 6000000,
-          "bufferSize": 30
+        "id": "172067",
+        "id_parent": "root",
+        "code": "main",
+        "text": "Main Menu",
+        "menu_id": "1670",
+        "image": null,
+        "image_over": null,
+        "level": 1,
+        "type": "dest",
+        "order": "10",
+        "status": "1",
+        "app_behaviour": {
+          "node_config": {
+            "show_node": true,
+            "show_title": false
+          }
         },
-        "drm": {
-          "type": "widevine",
-          "required": true
-        }
-      }
-    }
-  ],
-  "metadata": {
-    "configurations": [
+        "provider_name": null,
+        "children": [
+          {
+            "id": "172069",
+            "id_parent": "172067",
+            "code": "homeuser",
+            "text": "Inicio",
+            "menu_id": "1671",
+            "image": null,
+            "image_over": null,
+            "level": 1,
+            "type": "dest",
+            "order": "12",
+            "status": "1",
+            "app_behaviour": {
+              "node_config": {
+                "show_node": true,
+                "show_title": false
+              }
+            },
+            "provider_name": null
+          },
+          {
+            "id": "172070",
+            "id_parent": "172067",
+            "code": "live",
+            "text": "Live TV",
+            "menu_id": "1671",
+            "image": null,
+            "image_over": null,
+            "level": 1,
+            "type": "dest",
+            "order": "13",
+            "status": "1",
+            "app_behaviour": {
+              "node_config": {
+                "show_node": true,
+                "show_title": false
+              }
+            },
+            "provider_name": null
+          },
+          {
+            "id": "172071",
+            "id_parent": "172067",
+            "code": "vod",
+            "text": "Video on Demand",
+            "menu_id": "1671",
+            "image": null,
+            "image_over": null,
+            "level": 1,
+            "type": "dest",
+            "order": "14",
+            "status": "1",
+            "app_behaviour": {
+              "node_config": {
+                "show_node": true,
+                "show_title": false
+              }
+            },
+            "provider_name": null
+          }
+        ]
+      },
       {
-        "id": "video-quality",
-        "name": "Video Quality Settings",
-        "options": ["auto", "high", "medium", "low"]
-      }
-    ],
-    "parameters": [
-      {
-        "id": "content-filters",
-        "type": "object",
-        "properties": {
-          "parentalRating": "string",
-          "contentType": "array",
-          "language": "string"
-        }
+        "id": "172072",
+        "id_parent": "root",
+        "code": "settings",
+        "text": "Settings",
+        "menu_id": "1670",
+        "image": null,
+        "image_over": null,
+        "level": 1,
+        "type": "dest",
+        "order": "15",
+        "status": "1",
+        "app_behaviour": {
+          "node_config": {
+            "show_node": true,
+            "show_title": false
+          }
+        },
+        "provider_name": null
       }
     ]
   }

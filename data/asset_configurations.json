@@ -1,0 +1,154 @@
+{
+  "configurations": [
+    {
+      "deviceType": "smartphone",
+      "model": "iPhone 13",
+      "screenResolution": "1170x2532",
+      "supportedFormats": ["HLS", "DASH"],
+      "maxBitrate": 8000,
+      "bufferSize": 30,
+      "cdnConfig": {
+        "primary": "akamai",
+        "fallback": "cloudfront"
+      },
+      "drm": ["fairplay"],
+      "adaptiveBitrate": true,
+      "maxResolution": "1080p"
+    },
+    {
+      "deviceType": "smart_tv",
+      "model": "Samsung QN65Q80B",
+      "screenResolution": "3840x2160",
+      "supportedFormats": ["DASH", "HLS"],
+      "maxBitrate": 20000,
+      "bufferSize": 60,
+      "cdnConfig": {
+        "primary": "cloudfront",
+        "fallback": "akamai"
+      },
+      "drm": ["widevine"],
+      "adaptiveBitrate": true,
+      "maxResolution": "4K"
+    },
+    {
+      "deviceType": "tablet",
+      "model": "iPad Pro 12.9",
+      "screenResolution": "2048x2732",
+      "supportedFormats": ["HLS", "DASH"],
+      "maxBitrate": 12000,
+      "bufferSize": 45,
+      "cdnConfig": {
+        "primary": "akamai",
+        "fallback": "cloudfront"
+      },
+      "drm": ["fairplay"],
+      "adaptiveBitrate": true,
+      "maxResolution": "2K"
+    },
+    {
+      "deviceType": "streaming_stick",
+      "model": "Roku Streaming Stick 4K",
+      "screenResolution": "3840x2160",
+      "supportedFormats": ["DASH", "HLS"],
+      "maxBitrate": 15000,
+      "bufferSize": 45,
+      "cdnConfig": {
+        "primary": "cloudfront",
+        "fallback": "akamai"
+      },
+      "drm": ["widevine", "playready"],
+      "adaptiveBitrate": true,
+      "maxResolution": "4K"
+    },
+    {
+      "deviceType": "game_console",
+      "model": "Xbox Series X",
+      "screenResolution": "3840x2160",
+      "supportedFormats": ["DASH"],
+      "maxBitrate": 20000,
+      "bufferSize": 60,
+      "cdnConfig": {
+        "primary": "cloudfront",
+        "fallback": "akamai"
+      },
+      "drm": ["playready"],
+      "adaptiveBitrate": true,
+      "maxResolution": "4K"
+    },
+    {
+      "deviceType": "smart_tv",
+      "model": "LG OLED C2",
+      "screenResolution": "3840x2160",
+      "supportedFormats": ["DASH", "HLS"],
+      "maxBitrate": 20000,
+      "bufferSize": 60,
+      "cdnConfig": {
+        "primary": "akamai",
+        "fallback": "cloudfront"
+      },
+      "drm": ["widevine"],
+      "adaptiveBitrate": true,
+      "maxResolution": "4K"
+    },
+    {
+      "deviceType": "smartphone",
+      "model": "Samsung Galaxy S23",
+      "screenResolution": "1440x3088",
+      "supportedFormats": ["DASH", "HLS"],
+      "maxBitrate": 10000,
+      "bufferSize": 30,
+      "cdnConfig": {
+        "primary": "cloudfront",
+        "fallback": "akamai"
+      },
+      "drm": ["widevine"],
+      "adaptiveBitrate": true,
+      "maxResolution": "1440p"
+    },
+    {
+      "deviceType": "smart_tv",
+      "model": "Sony BRAVIA XR",
+      "screenResolution": "3840x2160",
+      "supportedFormats": ["DASH", "HLS"],
+      "maxBitrate": 20000,
+      "bufferSize": 60,
+      "cdnConfig": {
+        "primary": "akamai",
+        "fallback": "cloudfront"
+      },
+      "drm": ["widevine"],
+      "adaptiveBitrate": true,
+      "maxResolution": "4K"
+    },
+    {
+      "deviceType": "streaming_stick",
+      "model": "Amazon Fire TV Stick 4K",
+      "screenResolution": "3840x2160",
+      "supportedFormats": ["DASH", "HLS"],
+      "maxBitrate": 15000,
+      "bufferSize": 45,
+      "cdnConfig": {
+        "primary": "cloudfront",
+        "fallback": "akamai"
+      },
+      "drm": ["widevine"],
+      "adaptiveBitrate": true,
+      "maxResolution": "4K"
+    },
+    {
+      "deviceType": "tablet",
+      "model": "Samsung Galaxy Tab S9",
+      "screenResolution": "2560x1600",
+      "supportedFormats": ["DASH", "HLS"],
+      "maxBitrate": 12000,
+      "bufferSize": 45,
+      "cdnConfig": {
+        "primary": "cloudfront",
+        "fallback": "akamai"
+      },
+      "drm": ["widevine"],
+      "adaptiveBitrate": true,
+      "maxResolution": "2K"
+    }
+  ]
+}

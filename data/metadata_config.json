@@ -1,0 +1,244 @@
+{
+  "metadata_configurations": [
+    {
+      "contentType": "movie",
+      "parameters": {
+        "duration": {
+          "type": "number",
+          "required": true,
+          "unit": "seconds"
+        },
+        "rating": {
+          "type": "string",
+          "required": true,
+          "validValues": ["G", "PG", "PG-13", "R", "NC-17"]
+        },
+        "releaseYear": {
+          "type": "number",
+          "required": true,
+          "validation": "year >= 1900 && year <= currentYear"
+        }
+      },
+      "settings": {
+        "thumbnailSizes": ["small", "medium", "large"],
+        "requiredLanguages": ["en", "es-LA", "pt-BR"],
+        "subtitleFormats": ["WebVTT", "SRT"]
+      }
+    },
+    {
+      "contentType": "series",
+      "parameters": {
+        "seasonCount": {
+          "type": "number",
+          "required": true,
+          "minimum": 1
+        },
+        "episodeCount": {
+          "type": "number",
+          "required": true,
+          "minimum": 1
+        },
+        "status": {
+          "type": "string",
+          "required": true,
+          "validValues": ["ongoing", "completed", "cancelled"]
+        }
+      },
+      "settings": {
+        "thumbnailSizes": ["small", "medium", "large"],
+        "requiredLanguages": ["en", "es-LA", "pt-BR"],
+        "episodeNaming": "S{season}E{episode}"
+      }
+    },
+    {
+      "contentType": "live_event",
+      "parameters": {
+        "startTime": {
+          "type": "datetime",
+          "required": true,
+          "format": "ISO8601"
+        },
+        "duration": {
+          "type": "number",
+          "required": true,
+          "unit": "minutes"
+        },
+        "timeZone": {
+          "type": "string",
+          "required": true
+        }
+      },
+      "settings": {
+        "dvr": true,
+        "dvrWindow": 7200,
+        "multiAudio": true
+      }
+    },
+    {
+      "contentType": "sport_event",
+      "parameters": {
+        "sport": {
+          "type": "string",
+          "required": true
+        },
+        "tournament": {
+          "type": "string",
+          "required": true
+        },
+        "teams": {
+          "type": "array",
+          "required": true,
+          "minItems": 2
+        }
+      },
+      "settings": {
+        "statistics": true,
+        "multiCamera": true,
+        "replaySupport": true
+      }
+    },
+    {
+      "contentType": "documentary",
+      "parameters": {
+        "duration": {
+          "type": "number",
+          "required": true,
+          "unit": "seconds"
+        },
+        "category": {
+          "type": "string",
+          "required": true,
+          "validValues": ["nature", "science", "history", "biography"]
+        },
+        "format": {
+          "type": "string",
+          "required": true,
+          "validValues": ["series", "feature", "short"]
+        }
+      },
+      "settings": {
+        "chaptersSupport": true,
+        "interactiveElements": false
+      }
+    },
+    {
+      "contentType": "kids_content",
+      "parameters": {
+        "ageRange": {
+          "type": "object",
+          "required": true,
+          "properties": {
+            "min": {"type": "number"},
+            "max": {"type": "number"}
+          }
+        },
+        "educational": {
+          "type": "boolean",
+          "required": true
+        },
+        "parentalControls": {
+          "type": "string",
+          "required": true,
+          "validValues": ["none", "moderate", "strict"]
+        }
+      },
+      "settings": {
+        "interactiveElements": true,
+        "autoplayRestrictions": true
+      }
+    },
+    {
+      "contentType": "music_video",
+      "parameters": {
+        "artist": {
+          "type": "string",
+          "required": true
+        },
+        "duration": {
+          "type": "number",
+          "required": true,
+          "unit": "seconds"
+        },
+        "genre": {
+          "type": "array",
+          "required": true,
+          "items": {"type": "string"}
+        }
+      },
+      "settings": {
+        "audioQuality": ["standard", "high", "studio"],
+        "lyrics": true
+      }
+    },
+    {
+      "contentType": "trailer",
+      "parameters": {
+        "duration": {
+          "type": "number",
+          "required": true,
+          "unit": "seconds",
+          "maximum": 300
+        },
+        "relatedContent": {
+          "type": "string",
+          "required": true
+        },
+        "releaseDate": {
+          "type": "date",
+          "required": true
+        }
+      },
+      "settings": {
+        "autoplay": true,
+        "skipOption": true
+      }
+    },
+    {
+      "contentType": "news",
+      "parameters": {
+        "category": {
+          "type": "string",
+          "required": true,
+          "validValues": ["breaking", "politics", "sports", "entertainment"]
+        },
+        "duration": {
+          "type": "number",
+          "required": true,
+          "unit": "seconds"
+        },
+        "live": {
+          "type": "boolean",
+          "required": true
+        }
+      },
+      "settings": {
+        "breakingNewsAlert": true,
+        "liveIndicator": true
+      }
+    },
+    {
+      "contentType": "short_form",
+      "parameters": {
+        "duration": {
+          "type": "number",
+          "required": true,
+          "unit": "seconds",
+          "maximum": 300
+        },
+        "category": {
+          "type": "string",
+          "required": true,
+          "validValues": ["entertainment", "lifestyle", "food", "travel"]
+        },
+        "vertical": {
+          "type": "boolean",
+          "required": true
+        }
+      },
+      "settings": {
+        "loopPlayback": true,
+        "shareEnabled": true
+      }
+    }
+  ]
+}

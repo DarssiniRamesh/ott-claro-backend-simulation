@@ -1,10 +1,12 @@
-const dbService = require('./dbService');
+const dataAccess = require('./dataAccess');
 
 // PUBLIC_INTERFACE
 const getAssetConfig = async (params) => {
-  const db = dbService.readData();
-  const assetConfig = db.assets.find(asset => asset.deviceType === params.device_type) || 
-                     db.assets.find(asset => asset.id === 'default');
+  console.log('Reading asset configuration from: assets.json');
+  const assetData = dataAccess.readJsonFile('assets.json');
+  console.log('Asset data read:', assetData);
+  const assetConfig = assetData.assets.find(asset => asset.deviceType === params.device_type) || 
+                     assetData.assets.find(asset => asset.id === 'default');
   
   if (!assetConfig) {
     const error = new Error('Asset configuration not found');
@@ -13,17 +15,20 @@ const getAssetConfig = async (params) => {
   }
 
   // Convert to key-value pairs format
-  return Object.entries(assetConfig.config || {}).reduce((acc, [key, value]) => {
+  const response = Object.entries(assetConfig.config || {}).reduce((acc, [key, value]) => {
     acc[key] = value;
     return acc;
   }, {});
+  console.log('Sending asset configuration response:', response);
+  return response;
 };
 
 // PUBLIC_INTERFACE
 // PUBLIC_INTERFACE
 const getMetadata = async (params) => {
-  const db = dbService.readData();
-  const metadata = db.metadata || {};
+  console.log('Reading metadata from: metadata.json');
+  const metadata = dataAccess.readJsonFile('metadata.json');
+  console.log('Metadata read:', metadata);
 
   // Define output parameters with their types
   const outputParams = {
@@ -58,6 +63,7 @@ const getMetadata = async (params) => {
     result[param] = param in metadata ? metadata[param] : null;
   });
 
+  console.log('Sending metadata response:', result);
   return result;
 };
 

@@ -1,0 +1,124 @@
+{
+  "users": [
+    {
+      "userId": "usr_001",
+      "deviceType": "smartphone",
+      "deviceModel": "iPhone 13",
+      "region": "BR-SP",
+      "language": "pt-BR",
+      "sessionId": "sess_a1b2c3d4",
+      "timestamp": "2024-01-20T10:30:00Z",
+      "deviceResolution": "1170x2532",
+      "osVersion": "iOS 17.2",
+      "appVersion": "2.1.0"
+    },
+    {
+      "userId": "usr_002",
+      "deviceType": "smart_tv",
+      "deviceModel": "Samsung QN65Q80B",
+      "region": "BR-RJ",
+      "language": "pt-BR",
+      "sessionId": "sess_e5f6g7h8",
+      "timestamp": "2024-01-20T10:35:00Z",
+      "deviceResolution": "3840x2160",
+      "osVersion": "Tizen 6.5",
+      "appVersion": "3.0.1"
+    },
+    {
+      "userId": "usr_003",
+      "deviceType": "tablet",
+      "deviceModel": "iPad Pro 12.9",
+      "region": "MX-CMX",
+      "language": "es-MX",
+      "sessionId": "sess_i9j0k1l2",
+      "timestamp": "2024-01-20T10:40:00Z",
+      "deviceResolution": "2048x2732",
+      "osVersion": "iPadOS 17.2",
+      "appVersion": "2.1.0"
+    },
+    {
+      "userId": "usr_004",
+      "deviceType": "streaming_stick",
+      "deviceModel": "Roku Streaming Stick 4K",
+      "region": "CO-DC",
+      "language": "es-CO",
+      "sessionId": "sess_m3n4o5p6",
+      "timestamp": "2024-01-20T10:45:00Z",
+      "deviceResolution": "3840x2160",
+      "osVersion": "Roku OS 11.5",
+      "appVersion": "2.0.5"
+    },
+    {
+      "userId": "usr_005",
+      "deviceType": "smartphone",
+      "deviceModel": "Samsung Galaxy S23",
+      "region": "AR-BA",
+      "language": "es-AR",
+      "sessionId": "sess_q7r8s9t0",
+      "timestamp": "2024-01-20T10:50:00Z",
+      "deviceResolution": "1440x3088",
+      "osVersion": "Android 14",
+      "appVersion": "2.1.0"
+    },
+    {
+      "userId": "usr_006",
+      "deviceType": "game_console",
+      "deviceModel": "Xbox Series X",
+      "region": "CL-RM",
+      "language": "es-CL",
+      "sessionId": "sess_u1v2w3x4",
+      "timestamp": "2024-01-20T10:55:00Z",
+      "deviceResolution": "3840x2160",
+      "osVersion": "Xbox OS 10.0",
+      "appVersion": "1.9.0"
+    },
+    {
+      "userId": "usr_007",
+      "deviceType": "smart_tv",
+      "deviceModel": "LG OLED C2",
+      "region": "BR-MG",
+      "language": "pt-BR",
+      "sessionId": "sess_y5z6a7b8",
+      "timestamp": "2024-01-20T11:00:00Z",
+      "deviceResolution": "3840x2160",
+      "osVersion": "webOS 23",
+      "appVersion": "3.0.1"
+    },
+    {
+      "userId": "usr_008",
+      "deviceType": "smartphone",
+      "deviceModel": "Motorola Edge 40",
+      "region": "PE-LIM",
+      "language": "es-PE",
+      "sessionId": "sess_c9d0e1f2",
+      "timestamp": "2024-01-20T11:05:00Z",
+      "deviceResolution": "1080x2400",
+      "osVersion": "Android 13",
+      "appVersion": "2.1.0"
+    },
+    {
+      "userId": "usr_009",
+      "deviceType": "tablet",
+      "deviceModel": "Samsung Galaxy Tab S9",
+      "region": "BR-RS",
+      "language": "pt-BR",
+      "sessionId": "sess_g3h4i5j6",
+      "timestamp": "2024-01-20T11:10:00Z",
+      "deviceResolution": "2560x1600",
+      "osVersion": "Android 14",
+      "appVersion": "2.1.0"
+    },
+    {
+      "userId": "usr_010",
+      "deviceType": "smart_tv",
+      "deviceModel": "Sony BRAVIA XR",
+      "region": "MX-JAL",
+      "language": "es-MX",
+      "sessionId": "sess_k7l8m9n0",
+      "timestamp": "2024-01-20T11:15:00Z",
+      "deviceResolution": "3840x2160",
+      "osVersion": "Google TV",
+      "appVersion": "3.0.1"
+    }
+  ]
+}

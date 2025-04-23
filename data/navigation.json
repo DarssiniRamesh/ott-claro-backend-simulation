@@ -1,0 +1,26 @@
+{
+  "nodes": [
+    {
+      "id": "home",
+      "title": "Home",
+      "type": "menu",
+      "children": [
+        {
+          "id": "live",
+          "title": "Live TV",
+          "type": "section"
+        },
+        {
+          "id": "vod",
+          "title": "On Demand",
+          "type": "section"
+        },
+        {
+          "id": "settings",
+          "title": "Settings",
+          "type": "menu"
+        }
+      ]
+    }
+  ]
+}

@@ -1,11 +1,15 @@
 const { v4: uuidv4 } = require('uuid');
 const moment = require('moment-timezone');
 const geoip = require('geoip-lite');
-const dbService = require('./dbService');
+const dataAccess = require('./dataAccess');
 
-// Helper function to get client IP and geolocation
-const DEFAULT_REGION = 'US';
-const DEFAULT_TIMEZONE = 'America/New_York';
+// Load user configuration
+const userConfig = () => {
+  console.log('Reading user configuration from: user.json');
+  const data = dataAccess.readJsonFile('user.json');
+  console.log('User configuration data:', data);
+  return data;
+};
 
 /**
  * Get location information from IP address with enhanced error handling
@@ -14,13 +18,13 @@ const DEFAULT_TIMEZONE = 'America/New_York';
  */
 const getLocationInfo = (ip) => {
   // Default values for development/local environment
-  if (ip === '127.0.0.1' || ip === 'localhost') {
-    return { region: DEFAULT_REGION, timezone: DEFAULT_TIMEZONE };
-  }
-
-  if (!ip) {
-    console.warn('No IP address provided');
-    return { region: DEFAULT_REGION, timezone: DEFAULT_TIMEZONE };
+  const config = userConfig();
+  if (ip === '127.0.0.1' || ip === 'localhost' || !ip) {
+    console.warn('Using default location for', ip || 'unknown IP');
+    return { 
+      region: config.default_region, 
+      timezone: config.default_timezone 
+    };
   }
 
   try {
@@ -70,7 +74,7 @@ const getHeaderInfo = async (clientIp) => {
     localTime = now.clone();
   }
   
-  return {
+  const response = {
     region: locationInfo.region,
     session_stringvalue: uuidv4(),
     session_parametername: 'HKS',
@@ -81,6 +85,8 @@ const getHeaderInfo = async (clientIp) => {
     local_time: localTime.format('YYYY-MM-DD HH:mm:ss Z'),  // Include timezone offset
     offset: localTime.format('Z')  // Add explicit offset information
   };
+  console.log('Sending header info response:', response);
+  return response;
 };
 
 module.exports = {

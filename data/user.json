@@ -1,0 +1,11 @@
+{
+  "default_region": "US",
+  "default_timezone": "America/New_York",
+  "supported_regions": ["US", "PE", "BR", "MX"],
+  "region_timezones": {
+    "US": "America/New_York",
+    "PE": "America/Lima",
+    "BR": "America/Sao_Paulo",
+    "MX": "America/Mexico_City"
+  }
+}

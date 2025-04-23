@@ -1,55 +1,74 @@
-const dbService = require('./dbService');
+const fs = require('fs');
+const path = require('path');
 
-// PUBLIC_INTERFACE
-const getNavigationData = async (params) => {
-  // Verify session key (HKS)
-  if (!isValidSessionKey(params.HKS)) {
-    throw new Error('Invalid session key');
+class NavService {
+  /**
+   * PUBLIC_INTERFACE
+   * Get navigation data with device information
+   * @param {Object} navParams - Navigation parameters including device info
+   * @returns {Object} Navigation data response
+   */
+  getNavigationData(navParams = {}) {
+    try {
+      // Read navigation data
+      console.log('Reading navigation data from: navigation.json');
+      const navData = require('./dataAccess').readJsonFile('navigation.json');
+      console.log('Navigation data read:', navData);
+
+      // Construct response with navigation data and device info
+      const response = {
+        entry: {
+          authpn: navParams.authpn || "tataelxsi",
+          authpt: navParams.authpt || "vofee7ohhecai",
+          device_category: navParams.device_category || "stb",
+          device_type: navParams.device_type || "ptv",
+          device_model: navParams.device_model || "androidTV",
+          device_manufacturer: navParams.device_manufacturer || "ZTE",
+          HKS: navParams.HKS || "63eb2f6aebf9b",
+          api_version: navParams.api_version || "v5.93",
+          region: navParams.region || "peru",
+          device_id: navParams.device_id || "ZTEATV41200438564",
+          device_so: navParams.device_so || "Android 10",
+          format: "json",
+          device_name: navParams.device_name || "B866V2_AMX_ATV_PE"
+        },
+        response: {
+          nodes: navData.nodes || []
+        },
+        status: 0,
+        msg: "OK"
+      };
+
+      // Return response object (not stringified)
+      console.log('Sending navigation response:', response);
+      return response;
+
+    } catch (error) {
+      // Return error response object (not stringified)
+      return {
+        entry: {
+          authpn: "",
+          authpt: "",
+          device_category: "",
+          device_type: "",
+          device_model: "",
+          device_manufacturer: "",
+          HKS: "",
+          api_version: "",
+          region: "",
+          device_id: "",
+          device_so: "",
+          format: "json",
+          device_name: ""
+        },
+        response: {
+          nodes: []
+        },
+        status: 1,
+        msg: String(error.message || "Unknown error")
+      };
+    }
   }
+}
 
-  // Verify region from user/startheaderinfo
-  if (!isValidRegion(params.region)) {
-    throw new Error('Invalid region');
-  }
-
-  const db = dbService.readData();
-  const navData = db.navigation;
-
-  // Transform navigation data into properly typed nodes array
-  const nodes = [
-    ...(Array.isArray(navData.sections) ? navData.sections : []).map(section => ({
-      id: String(section.id || ''),
-      name: String(section.name || ''),
-      order: parseInt(section.order || 0, 10), // Ensure integer
-      type: String('section'),
-      categories: Array.isArray(section.categories) ? 
-        section.categories.map(cat => String(cat || '')) : 
-        []
-    })),
-    ...(Array.isArray(navData.categories) ? navData.categories : []).map(category => ({
-      id: String(category.id || ''),
-      name: String(category.name || ''),
-      type: String(category.type || '')
-    }))
-  ];
-
-  return {
-    nodes // Array is guaranteed by construction
-  };
-};
-
-// Helper function to validate session key
-const isValidSessionKey = (hks) => {
-  // TODO: Implement actual session key validation
-  return true;
-};
-
-// Helper function to validate region
-const isValidRegion = (region) => {
-  // TODO: Implement actual region validation
-  return true;
-};
-
-module.exports = {
-  getNavigationData
-};
+module.exports = NavService;
