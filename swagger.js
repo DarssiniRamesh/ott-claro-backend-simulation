@@ -13,8 +13,25 @@ const options = {
         url: 'http://localhost:3000',
         description: 'Development server',
       },
+      {
+        url: 'https://api.claro.com',
+        description: 'Production server',
+      },
+    ],
+    security: [
+      {
+        apiAuth: [],
+      },
     ],
     components: {
+      securitySchemes: {
+        apiAuth: {
+          type: 'apiKey',
+          in: 'query',
+          name: 'authpt',
+          description: 'Authentication token (must be vofee7ohhecai)',
+        },
+      },
       schemas: {
         StartHeaderInfo: {
           type: 'object',
@@ -128,4 +145,9 @@ const options = {
   apis: ['./routes/*.js'], // Path to the API routes
 };
 
-module.exports = swaggerJsdoc(options);
+const swaggerSpec = swaggerJsdoc(options);
+
+module.exports = {
+  swaggerSpec,
+  options
+};
