@@ -4,12 +4,12 @@ const geoip = require('geoip-lite');
 const dataAccess = require('./dataAccess');
 
 // Load user configuration
-const userConfig = () => {
+const config = (() => {
   console.log('Reading user configuration from: user.json');
   const data = dataAccess.readJsonFile('user.json');
   console.log('User configuration data:', data);
   return data;
-};
+})();
 
 /**
  * Get location information from IP address with enhanced error handling
@@ -18,7 +18,6 @@ const userConfig = () => {
  */
 const getLocationInfo = (ip) => {
   // Default values for development/local environment
-  const config = userConfig();
   if (ip === '127.0.0.1' || ip === 'localhost' || !ip) {
     console.warn('Using default location for', ip || 'unknown IP');
     return { 
@@ -31,11 +30,11 @@ const getLocationInfo = (ip) => {
     const geo = geoip.lookup(ip);
     if (!geo) {
       console.warn(`Unable to determine location for IP: ${ip}`);
-      return { region: DEFAULT_REGION, timezone: DEFAULT_TIMEZONE };
+      return { region: config.default_region, timezone: config.default_timezone };
     }
 
     // Enhanced timezone validation
-    let timezone = DEFAULT_TIMEZONE;
+    let timezone = config.default_timezone;
     if (geo.timezone) {
       const zone = moment.tz.zone(geo.timezone);
       if (zone) {
@@ -50,12 +49,12 @@ const getLocationInfo = (ip) => {
     // Validate region format (should be 2-letter code)
     const region = geo.region && /^[A-Z]{2}$/.test(geo.region)
       ? geo.region
-      : DEFAULT_REGION;
+      : config.default_region;
 
     return { region, timezone };
   } catch (error) {
     console.error(`Error in geolocation lookup for IP ${ip}:`, error);
-    return { region: DEFAULT_REGION, timezone: DEFAULT_TIMEZONE };
+    return { region: config.default_region, timezone: config.default_timezone };
   }
 };
 
